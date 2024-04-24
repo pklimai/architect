@@ -1,0 +1,110 @@
+# More info on config here: https://golangci-lint.run/usage/configuration/
+run:
+  concurrency: 4
+  timeout: 5m
+  issues-exit-code: 1
+  tests: true
+  modules-download-mode: readonly
+  go: '1.21'
+    
+output:
+  formats: 
+    - format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+  uniq-by-line: true
+
+linters-settings:
+  nlreturn:
+    block-size: 2
+  govet:
+    shadow: true
+  dupl:
+    threshold: 200
+  goconst:
+    min-len: 2
+    min-occurrences: 3
+  gocognit:
+    min-complexity: 25
+  lll:
+    line-length: 120
+    tab-width: 4
+  funlen:
+    lines: 160
+    statements: 45
+  gomnd:
+    ignored-numbers:
+      - '1'
+      - '2'
+      - '10'
+      - '32'
+      - '64'
+      - '100'
+      - '1000'
+
+testpackage:
+  skip-regexp: (testing)_test\.go
+
+linters:
+  disable-all: true
+  enable:
+    - dupl
+    - errcheck
+    - goconst
+    - gosec
+    - govet
+    - ineffassign
+    - staticcheck
+    - gosimple
+    - revive
+    - typecheck
+    - unused
+    - gocognit
+    - nlreturn
+    - whitespace
+    - wsl
+    - errname
+    - forcetypeassert
+    - importas
+    - unparam
+    - prealloc
+    - paralleltest
+    - nestif
+    - nilerr
+    - makezero
+    - lll
+    - funlen
+    - durationcheck
+    - errorlint
+    - forbidigo
+    - gocyclo
+    - gomnd
+    - gofmt
+    - misspell
+    - testpackage 
+    - tparallel
+
+issues:
+  exclude-use-default: false
+  exclude:
+    - should have comment
+    - should have a package comment
+    - don't use an underscore in package name
+    - comment on exported var
+  exclude-dirs: 
+    - bin
+    - vendor
+    - vendor.protogen
+    - tmp
+    - internal/pb 
+  exclude-rules:
+    - linters:
+        - lll
+      # Игнорируем lll в импортах и //go: комментах
+      source: "((github\\.com|gitlab\\.com|google\\.golang\\.org)\\/|^\\s*\\/\\/go:\\/|.*jsonschema.*)"
+    - path: _test\.go
+      linters:
+        - funlen
+        - gosec
+        - govet
+        - gocognit

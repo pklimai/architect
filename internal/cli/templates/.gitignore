@@ -1,0 +1,10 @@
+/bin
+/vendor
+/vendor.protogen
+.DS_STORE
+.DS_Store
+/.idea
+/.vscode
+/.cache
+
+/env/.env

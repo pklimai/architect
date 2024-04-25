@@ -7,4 +7,4 @@
 /.vscode
 /.cache
 
-/env/.env
+/config/.env

@@ -1,0 +1,10 @@
+*.pb.go -diff
+*.pb.*.go -diff
+*.swagger.json -diff
+*.pb.gw.go -diff
+*swagger.go -diff
+protodep.lock -diff
+go.sum -diff
+**/mocks/** -diff
+
+/internal/generated

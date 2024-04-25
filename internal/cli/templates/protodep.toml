@@ -1,0 +1,42 @@
+proto_outdir = "./vendor.protogen"
+
+[[dependencies]]
+  target = "github.com/protocolbuffers/protobuf/src/google/protobuf"
+  branch = "main"
+  path = "google/protobuf"
+  includes = [
+    "timestamp.proto",
+    "descriptor.proto",
+    "duration.proto",
+    "struct.proto",
+  ]
+  protocol = "https"
+  
+[[dependencies]]
+  target = "github.com/googleapis/googleapis/google"
+  branch = "master"
+  path = "google"
+  includes = [
+    "api/annotations.proto",
+    "api/http.proto",
+  ]
+  protocol = "https"
+
+[[dependencies]]
+  target = "github.com/bufbuild/protoc-gen-validate/validate"
+  branch = "master"
+  path = "validate"
+  includes = [
+    "validate.proto",
+  ]
+  protocol = "https"
+
+[[dependencies]]
+  target = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-openapiv2/options"
+  branch = "main"
+  path = "protoc-gen-openapiv2/options"
+  includes = [
+    "openapiv2.proto",
+    "annotations.proto",
+  ]
+  protocol = "https"

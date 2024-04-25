@@ -1,0 +1,37 @@
+package {{ .ServiceName }}_impl
+
+import (
+	"context"
+
+	gw_runtime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	pb "{{ .Module }}/internal/generated/api/{{ .ServiceName }}"
+	"google.golang.org/grpc"
+)
+
+type Service struct {
+	pb.Unimplemented{{ .ServiceNameCamelCaseWithFirstUpper }}Server
+}
+
+func New() *Service {
+	return &Service{}
+}
+
+func (s *Service) RegisterGRPC(server *grpc.Server) {
+	pb.Register{{ .ServiceNameCamelCaseWithFirstUpper }}Server(server, s)
+}
+
+func (s *Service) RegisterGatewayEndpoint(
+	ctx context.Context,
+	mux *gw_runtime.ServeMux,
+	endpoint string,
+	dialOptions []grpc.DialOption,
+) error {
+	return pb.Register{{ .ServiceNameCamelCaseWithFirstUpper }}HandlerFromEndpoint(ctx, mux, endpoint, dialOptions)
+}
+
+func (s *Service) RegisterGateway(
+	ctx context.Context,
+	mux *gw_runtime.ServeMux,
+) error {
+	return pb.Register{{ .ServiceNameCamelCaseWithFirstUpper }}HandlerServer(ctx, mux, s)
+}

@@ -8,6 +8,7 @@ import (
 	"gitlab.com/zigal0/architect/internal/cli/logger"
 	"gitlab.com/zigal0/architect/internal/cli/project"
 	"gitlab.com/zigal0/architect/internal/cli/templates"
+	"gitlab.com/zigal0/architect/internal/cli/tool"
 )
 
 const (
@@ -25,7 +26,7 @@ var addCmd = &cobra.Command{
 
 var managerCmd = &cobra.Command{
 	Use:   entityTypeNameManager,
-	Short: "Generate new manager, top logic entity, with given pkg name.",
+	Short: "Generate new manager, top logic entity, with given name.",
 	// nolint: lll
 	Long: `Create new manager, top logic entity in the specified path internal/business/manager/manager_pkg_name/manager.go.
 Also adds file interfaces.go  with commands for minimock and testing_test.go in the same place if it do not exist.
@@ -44,7 +45,11 @@ Name should satisfy snake_case.
 
 		curProject := project.New(moduleName)
 
-		for _, info := range projectPartInfosToAddManager(curProject, args[0]) {
+		for _, info := range projectPartInfosToAddLogicEntity(
+			curProject,
+			entityTypeNameManager,
+			args[0],
+		) {
 			createProjectPart(info)
 		}
 
@@ -54,9 +59,44 @@ Name should satisfy snake_case.
 	},
 }
 
+var subManagerCmd = &cobra.Command{
+	Use:   entityTypeNameSubManager,
+	Short: "Generate new sub manager, bottom logic entity, with given name.",
+	// nolint: lll
+	Long: `Create new sub manager, bottom logic entity in the specified path internal/business/sub_manager/sub_manager_pkg_name/manager.go.
+Also adds file interfaces.go  with commands for minimock and testing_test.go in the same place if it do not exist.
+Name should satisfy snake_case.
+`,
+	Run: func(_ *cobra.Command, args []string) {
+		logger.Infof(formatLogStartCreation, entityTypeNameSubManager)
+
+		if len(args) == 0 {
+			logger.Fatal(logNoEntityNameProvided)
+		}
+		logger.FatalIfErr(validateEntityPkgName(args[0]))
+
+		moduleName, err := moduleFromGoMod()
+		logger.FatalIfErr(err)
+
+		curProject := project.New(moduleName)
+
+		for _, info := range projectPartInfosToAddLogicEntity(
+			curProject,
+			entityTypeNameSubManager,
+			args[0],
+		) {
+			createProjectPart(info)
+		}
+
+		logger.FatalIfErr(executeGoModTidy())
+
+		logger.Infof(formatLogFinishCreation, entityTypeNameSubManager)
+	},
+}
+
 var repositoryCmd = &cobra.Command{
 	Use:   entityTypeNameRepository,
-	Short: "Generate new repository with given pkg name.",
+	Short: "Generate new repository with given name.",
 	// nolint: lll
 	Long: `Create new repositoy based on sqlx in the specified path internal/adapter/repository/repository_pkg_name/repository.go.
 Also adds sql.go for quieries & model.go for data.
@@ -75,9 +115,21 @@ Name should satisfy snake_case.
 
 		curProject := project.New(moduleName)
 
-		for _, info := range projectPartInfosToAddRepository(curProject, args[0]) {
-			createProjectPart(info)
-		}
+		createProjectPart(projectPartInfo{
+			absPath: curProject.AbsPath(),
+			pathParts: []string{
+				layerNameiInternal,
+				layerNameAdapter,
+				entityTypeNameRepository,
+				args[0],
+				entityTypeNameRepository + extensionGo,
+			},
+			tmplt: templates.TemplateRepository,
+			tmpltData: templates.EntityData{
+				PkgName: args[0],
+			},
+			needToOverride: false,
+		})
 
 		logger.FatalIfErr(executeGoModTidy())
 
@@ -89,21 +141,25 @@ Name should satisfy snake_case.
 // Creation
 // --------------------//
 
-func projectPartInfosToAddManager(
+func projectPartInfosToAddLogicEntity(
 	curProject *project.Project,
-	managerName string,
+	entityTypeName string,
+	entityName string,
 ) []projectPartInfo {
-	baseParths := []string{layerNameiInternal, layerNameBusiness, entityTypeNameManager, managerName}
+	baseParths := []string{layerNameiInternal, layerNameBusiness, entityTypeName, entityName}
 
-	pkgName := strings.Join([]string{managerName, entityTypeNameManager}, "_")
+	pkgName := strings.Join([]string{entityName, entityTypeName}, "_")
+
+	entityTypeNameCamelCase := tool.ToCamelCaseWithFirstUpper(entityTypeName)
 
 	return []projectPartInfo{
 		{
 			absPath:   curProject.AbsPath(),
-			pathParts: append(baseParths, entityTypeNameManager+extensionGo),
-			tmplt:     templates.TemplateManager,
-			tmpltData: templates.EntityData{
-				PkgName: pkgName,
+			pathParts: append(baseParths, entityTypeName+extensionGo),
+			tmplt:     templates.TemplateLogicEntity,
+			tmpltData: templates.LogicEntityData{
+				PkgName:                               pkgName,
+				EntityTypeNameCamelCaseWithFirstUpper: entityTypeNameCamelCase,
 			},
 			needToOverride: false,
 		},
@@ -125,26 +181,7 @@ func projectPartInfosToAddManager(
 				FileDirPath: filepath.Join(
 					append([]string{curProject.Module()}, baseParths...)...,
 				),
-				EntityTypeNameWithUpperFirst: upFirstLetter(entityTypeNameManager),
-			},
-			needToOverride: false,
-		},
-	}
-}
-
-func projectPartInfosToAddRepository(
-	curProject *project.Project,
-	pkgName string,
-) []projectPartInfo {
-	baseParths := []string{layerNameiInternal, layerNameAdapter, entityTypeNameRepository, pkgName}
-
-	return []projectPartInfo{
-		{
-			absPath:   curProject.AbsPath(),
-			pathParts: append(baseParths, entityTypeNameRepository+extensionGo),
-			tmplt:     templates.TemplateRepository,
-			tmpltData: templates.EntityData{
-				PkgName: pkgName,
+				EntityTypeNameCamelCaseWithFirstUpper: entityTypeNameCamelCase,
 			},
 			needToOverride: false,
 		},

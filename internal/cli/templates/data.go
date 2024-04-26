@@ -28,8 +28,13 @@ type EntityData struct {
 	PkgName string
 }
 
+type LogicEntityData struct {
+	PkgName                               string
+	EntityTypeNameCamelCaseWithFirstUpper string
+}
+
 type TestingTestData struct {
-	PkgName                      string
-	FileDirPath                  string
-	EntityTypeNameWithUpperFirst string
+	PkgName                               string
+	FileDirPath                           string
+	EntityTypeNameCamelCaseWithFirstUpper string
 }

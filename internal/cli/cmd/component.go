@@ -3,6 +3,7 @@ package cmd
 const (
 	// entity
 	entityTypeNameManager    = "manager"
+	entityTypeNameSubManager = "sub_manager"
 	entityTypeNameRepository = "repository"
 
 	// layer

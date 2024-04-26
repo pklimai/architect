@@ -50,32 +50,24 @@ It generates code only for name that satisfies snake_case_name_service with name
 				needToOverride: false,
 			})
 
-			for _, info := range projectPartInfosToGenerateService(curProject, serviceName) {
-				createProjectPart(info)
-			}
+			createProjectPart(projectPartInfo{
+				absPath: curProject.AbsPath(),
+				pathParts: []string{
+					layerNameiInternal,
+					layerNameAPI,
+					serviceName + "_impl",
+					"service.go",
+				},
+				tmplt: templates.TemplateRepository,
+				tmpltData: templates.ServiceData{
+					Module:                             curProject.Module(),
+					ServiceName:                        serviceName,
+					ServiceNameCamelCaseWithFirstUpper: tool.ToCamelCaseWithFirstUpper(serviceName),
+				},
+				needToOverride: false,
+			})
 		}
 
 		logger.Infof(formatLogFinishCreation, servicesString)
 	},
-}
-
-func projectPartInfosToGenerateService(
-	curProject *project.Project,
-	serviceName string,
-) []projectPartInfo {
-	baseParths := []string{layerNameiInternal, layerNameAPI, serviceName + "_impl"}
-
-	return []projectPartInfo{
-		{
-			absPath:   curProject.AbsPath(),
-			pathParts: append(baseParths, "service.go"),
-			tmplt:     templates.TemplateRepository,
-			tmpltData: templates.ServiceData{
-				Module:                             curProject.Module(),
-				ServiceName:                        serviceName,
-				ServiceNameCamelCaseWithFirstUpper: tool.ToCamelCaseWithFirstUpper(serviceName),
-			},
-			needToOverride: false,
-		},
-	}
 }

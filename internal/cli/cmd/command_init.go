@@ -1,34 +1,29 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"gitlab.com/zigal0/architect/internal/cli/logger"
 	"gitlab.com/zigal0/architect/internal/cli/project"
 	"gitlab.com/zigal0/architect/internal/cli/templates"
-	"golang.org/x/mod/module"
 )
 
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initialize architect application.",
-	Long:  "Cteate new architect application with all necessary infrastructure and ready to start.",
+	Long: `Cteate new architect application with all necessary infrastructure and ready to start.
+Name of application (the last part of mudule) shuould be in kebab-case.
+`,
 	Run: func(_ *cobra.Command, args []string) {
-		logger.Info("Start generating application with architect.")
+		logger.Info("Start module initialization.")
 
 		if len(args) == 0 {
 			logger.Fatal("The 'module' is required argument.")
 		}
 		logger.FatalIfErr(validateModule(args[0]))
 
-		wd, err := os.Getwd()
-		logger.FatalIfErr(err)
-
-		curProject := project.New(args[0], wd)
+		curProject := project.New(args[0])
 		logger.FatalIfErr(validateProjectName(curProject.Name()))
 
 		if !checkFileExist(filepath.Join(curProject.AbdPath(), goModFileName)) {
@@ -36,7 +31,7 @@ var initCmd = &cobra.Command{
 		}
 
 		// create architect of application
-		for _, info := range prepareProjectPartInfos(curProject) {
+		for _, info := range projectPartInfosForInit(curProject) {
 			createProjectPart(info)
 		}
 
@@ -50,33 +45,33 @@ var initCmd = &cobra.Command{
 // Creation
 // --------------------//
 
-func prepareProjectPartInfos(curProject *project.Project) []projectPartInfo {
+func projectPartInfosForInit(curProject *project.Project) []projectPartInfo {
 	return []projectPartInfo{
 		{
 			curProject:     curProject,
 			pathParts:      []string{".gitignore"},
-			tmplt:          templates.GitIgnoreTemplate,
-			tmpltData:      nil,
-			needToOverride: false,
-		},
-		{
-			curProject:     curProject,
-			pathParts:      []string{".golangci.yaml"},
-			tmplt:          templates.GolangCITemplate,
+			tmplt:          templates.TemplateGitIgnore,
 			tmpltData:      nil,
 			needToOverride: false,
 		},
 		{
 			curProject:     curProject,
 			pathParts:      []string{".gitattributes"},
-			tmplt:          templates.GitAttributesTemplate,
+			tmplt:          templates.TemplateGitAttributes,
 			tmpltData:      nil,
 			needToOverride: false,
 		},
 		{
+			curProject:     curProject,
+			pathParts:      []string{".gitlab-ci.yml"},
+			tmplt:          templates.TemplateGitlabCI,
+			tmpltData:      nil,
+			needToOverride: true,
+		},
+		{
 			curProject: curProject,
 			pathParts:  []string{"Dockerfile"},
-			tmplt:      templates.DockerfileTempalte,
+			tmplt:      templates.TemplateDockerfile,
 			tmpltData: templates.CommonData{
 				ProjectName: curProject.Name(),
 			},
@@ -84,26 +79,57 @@ func prepareProjectPartInfos(curProject *project.Project) []projectPartInfo {
 		},
 		{
 			curProject:     curProject,
-			pathParts:      []string{".gitlab-ci.yml"},
-			tmplt:          templates.GitlabCITemplate,
+			pathParts:      []string{".golangci.yaml"},
+			tmplt:          templates.TemplateGolangCI,
 			tmpltData:      nil,
-			needToOverride: true,
+			needToOverride: false,
 		},
+
 		{
 			curProject:     curProject,
 			pathParts:      []string{"protodep.toml"},
-			tmplt:          templates.ProtodepConfigTemplate,
+			tmplt:          templates.TemplateProtodepConfig,
 			tmpltData:      nil,
 			needToOverride: false,
 		},
 		{
 			curProject: curProject,
-			pathParts:  []string{"api", curProject.NameUnderscored() + "_service", "service.proto"},
-			tmplt:      templates.ProtoServiceTemplate,
+			pathParts:  []string{"architect.mk"},
+			tmplt:      templates.TemplateArchitectMK,
+			tmpltData: templates.CommonData{
+				ProjectName: curProject.Name(),
+			},
+			needToOverride: true,
+		},
+		{
+			curProject:     curProject,
+			pathParts:      []string{"config", "config.go"},
+			tmplt:          templates.TemplateConfig,
+			tmpltData:      nil,
+			needToOverride: false,
+		},
+		{
+			curProject:     curProject,
+			pathParts:      []string{"config", "env_local_example.env"},
+			tmplt:          templates.TemplateEnvLocalExample,
+			tmpltData:      nil,
+			needToOverride: false,
+		},
+		{
+			curProject:     curProject,
+			pathParts:      []string{"Makefile"},
+			tmplt:          templates.TemplateMakefile,
+			tmpltData:      nil,
+			needToOverride: false,
+		},
+		{
+			curProject: curProject,
+			pathParts:  []string{"api", curProject.NameSnakeCase() + "_service", "service.proto"},
+			tmplt:      templates.TemplateProtoService,
 			tmpltData: templates.ProtoServiceData{
 				Module:                             curProject.Module(),
 				ModuleForProto:                     curProject.ModuleForProto(),
-				ProjectNameUnderscored:             curProject.NameUnderscored(),
+				ProjectNameSnakeCase:               curProject.NameSnakeCase(),
 				ProjectNameCamelCaseWithFirstUpper: curProject.NameCamelCaseWithFirstUpper(),
 				ProjectName:                        curProject.Name(),
 			},
@@ -111,24 +137,8 @@ func prepareProjectPartInfos(curProject *project.Project) []projectPartInfo {
 		},
 		{
 			curProject: curProject,
-			pathParts:  []string{"architect.mk"},
-			tmplt:      templates.ArchitectMKTemplate,
-			tmpltData: templates.CommonData{
-				ProjectName: curProject.Name(),
-			},
-			needToOverride: true,
-		},
-		{
-			curProject:     curProject,
-			pathParts:      []string{"Makefile"},
-			tmplt:          templates.MakefileTemplate,
-			tmpltData:      nil,
-			needToOverride: false,
-		},
-		{
-			curProject: curProject,
 			pathParts:  []string{"cmd", curProject.Name(), "main.go"},
-			tmplt:      templates.MainTemplate,
+			tmplt:      templates.TemplateMain,
 			tmpltData: templates.MainData{
 				Module:                             curProject.Module(),
 				ProjectNameSnakeCase:               curProject.NameSnakeCase(),
@@ -136,58 +146,20 @@ func prepareProjectPartInfos(curProject *project.Project) []projectPartInfo {
 			},
 			needToOverride: false,
 		},
-		{
-			curProject:     curProject,
-			pathParts:      []string{"config", "config.go"},
-			tmplt:          templates.ConfigTemplate,
-			tmpltData:      nil,
-			needToOverride: false,
-		},
-		{
-			curProject:     curProject,
-			pathParts:      []string{"config", "env_local_example.env"},
-			tmplt:          templates.EnvLocalExampleTemplate,
-			tmpltData:      nil,
-			needToOverride: false,
-		},
 		// TODO: dirty hack for swagger, need to fix
 		{
 			curProject:     curProject,
 			pathParts:      []string{"internal", "generated", "swagger", "embed.go"},
-			tmplt:          templates.SwaggerHackTemplate,
+			tmplt:          templates.TemplateSwaggerHack,
 			tmpltData:      nil,
 			needToOverride: false,
 		},
 		{
 			curProject:     curProject,
 			pathParts:      []string{"script", "generate_swagger_ui.sh"},
-			tmplt:          templates.GenerateSwaggerUITemplate,
+			tmplt:          templates.TemplateGenerateSwaggerUI,
 			tmpltData:      nil,
 			needToOverride: true,
 		},
 	}
-}
-
-// --------------------//
-// Validation
-// --------------------//
-
-func validateModule(moduleName string) error {
-	if err := module.CheckPath(moduleName); err != nil {
-		return err
-	}
-
-	if !strings.HasPrefix(moduleName, "gitlab.com") {
-		return fmt.Errorf("invalid module %s: must have prefix 'gitlab.com'", moduleName)
-	}
-
-	return nil
-}
-
-func validateProjectName(name string) error {
-	if !projectNameRegExp.MatchString(name) {
-		return fmt.Errorf("invalid application name '%s': starts with '-' symbol or contains forbidden symbols, only alphanumeric & '-' allowed", name) // nolint: lll
-	}
-
-	return nil
 }

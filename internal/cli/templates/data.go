@@ -7,7 +7,7 @@ type CommonData struct {
 type ProtoServiceData struct {
 	Module                             string
 	ModuleForProto                     string
-	ProjectNameUnderscored             string
+	ProjectNameSnakeCase            string
 	ProjectNameCamelCaseWithFirstUpper string
 	ProjectName                        string
 }
@@ -22,4 +22,15 @@ type MainData struct {
 	ProjectNameSnakeCase               string
 	Module                             string
 	ProjectNameCamelCaseWithFirstLower string
+}
+
+type EntityData struct {
+	EntityPkgName string
+}
+
+type TestingTestData struct {
+	EntityPkgName    string
+	FileDirPath                  string
+	EntityTypeName               string
+	EntityTypeNameWithUpperFirst string
 }

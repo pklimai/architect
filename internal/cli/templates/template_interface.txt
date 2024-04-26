@@ -1,0 +1,4 @@
+package {{ .EntityPkgName }}
+
+//go:generate sh -c "rm -rf mocks && mkdir -p mocks"
+//go:generate minimock -i * -o ./mocks -s "_mock.go" -g

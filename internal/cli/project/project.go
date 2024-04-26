@@ -1,8 +1,10 @@
 package project
 
 import (
+	"os"
 	"strings"
 
+	"gitlab.com/zigal0/architect/internal/cli/logger"
 	"gitlab.com/zigal0/architect/internal/cli/tool"
 )
 
@@ -12,13 +14,16 @@ type Project struct {
 	name    string
 }
 
-func New(module, absPath string) *Project {
+func New(module string) *Project {
 	parts := strings.Split(module, "/")
 	name := parts[len(parts)-1]
 
+	wd, err := os.Getwd()
+	logger.FatalIfErr(err)
+
 	return &Project{
 		module:  module,
-		absPath: absPath,
+		absPath: wd,
 		name:    name,
 	}
 }
@@ -29,10 +34,6 @@ func (p *Project) AbdPath() string {
 
 func (p *Project) Name() string {
 	return p.name
-}
-
-func (p *Project) NameUnderscored() string {
-	return strings.ReplaceAll(p.name, "-", "_")
 }
 
 func (p *Project) NameCamelCaseWithFirstUpper() string {
@@ -58,5 +59,5 @@ func (p *Project) ModuleForProto() string {
 
 	moduleWithDots := strings.Join(modulePartsWithoutName, ".")
 
-	return moduleWithDots + "." + p.NameUnderscored()
+	return moduleWithDots + "." + p.NameSnakeCase()
 }

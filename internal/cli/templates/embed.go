@@ -47,8 +47,8 @@ var TemplateEnvLocalExample string
 //go:embed template_generate_swagger_ui.sh
 var TemplateGenerateSwaggerUI string
 
-//go:embed template_manager.txt
-var TemplateManager string
+//go:embed template_logic_entity.txt
+var TemplateLogicEntity string
 
 //go:embed template_interface.txt
 var TemplateInterface string

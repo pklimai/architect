@@ -17,11 +17,12 @@ In the best case architect allow to construct artcitecture of application on the
 
 ### Details
 Command scathces:
-- add - base for other add commands.
+- add - base for other add commands. [x]
     - client - adds clinet for other service + connection base. In best case - generate form proto client code.
     - postgres - adds code for connection to postgres. Can consider other DBs. 
-    - repo - adds base repo code. 
-    - manager - adds base business-unit code + interfaces.
+    - repo - adds base repo code. [x]
+    - manager - adds base business-unit code + interfaces. [x]
+    - sub manager - adds base business-unit code + interfaces. [x]
     - kafka (consumer/producer)kafka message broker - adds code for . Need to think more, mb some supestructure above kafka/rabbiMQ.
     - cron - adds base code for cron. 
 - show - base for other show commands.

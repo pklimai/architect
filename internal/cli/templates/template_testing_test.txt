@@ -19,7 +19,7 @@ type fixture struct {
     ctx context.Context
     *assert.Assertions
 
-    testEntity *{{ .PkgName }}.{{ .EntityTypeNameWithUpperFirst }}
+    testEntity *{{ .PkgName }}.{{ .EntityTypeNameCamelCaseWithFirstUpper }}
 }
 
 

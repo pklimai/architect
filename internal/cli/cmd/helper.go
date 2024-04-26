@@ -9,7 +9,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"text/template"
 
@@ -30,12 +29,6 @@ const (
 
 const (
 	goModFileName = "go.mod"
-)
-
-// RegExp
-var (
-	serviceNameRegExp = regexp.MustCompile("^([a-zA-Z]+_)+service$")
-	projectNameRegExp = regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9-]*$")
 )
 
 type projectPartInfo struct {

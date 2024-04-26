@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package {{ .ModuleForProto }}.api.{{ .ProjectNameUnderscored }}_service;
+package {{ .ModuleForProto }}.api.{{ .ProjectNameSnakeCase }}_service;
 
-option go_package = "{{ .Module }}/internal/generated/api/{{ .ProjectNameUnderscored }}_service;{{ .ProjectNameUnderscored }}_service";
+option go_package = "{{ .Module }}/internal/generated/api/{{ .ProjectNameSnakeCase }}_service;{{ .ProjectNameSnakeCase }}_service";
 
 import "google/api/annotations.proto";
 import "validate/validate.proto";

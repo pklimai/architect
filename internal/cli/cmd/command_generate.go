@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -15,26 +14,27 @@ import (
 
 var generateCmd = &cobra.Command{
 	Use:   "generate",
-	Short: "Base for other generate commands.",
-	Long:  "Command is a root for various generate sub-commands.",
+	Short: "Base for other generate sub commands.",
+	Long:  "Command is a root for various generate sub commands.",
 }
 
 var servicesCmd = &cobra.Command{
 	Use:   "services",
 	Short: "Generate servises bases on given names.",
 	Long: `Generate entitis for base application that responsible for connection between ptotoc generated code.
-It generates code only for name that satisfies the pattern 'some-parts-name-service' with name SomePartsNameService.
+It generates code only for name that satisfies snake_case_name_service with name SnakeCaseNameService.
 `,
 	Run: func(_ *cobra.Command, args []string) {
-		logger.Info("Start generate services for ptotoc generated code.")
+		logger.Info("Start services generation.")
+
+		if len(args) == 0 {
+			logger.Fatal("No services name were provided.")
+		}
 
 		moduleName, err := moduleFromGoMod()
 		logger.FatalIfErr(err)
 
-		wd, err := os.Getwd()
-		logger.FatalIfErr(err)
-
-		curProject := project.New(moduleName, wd)
+		curProject := project.New(moduleName)
 
 		for _, rawServiceName := range args {
 			if !serviceNameRegExp.MatchString(rawServiceName) {
@@ -65,7 +65,7 @@ func createService(curProject *project.Project, serviceName string) {
 		ServiceNameCamelCaseWithFirstUpper: tool.ToCamelCaseWithFirstUpper(serviceName),
 	}
 
-	content, err := createContentFromTemplate(templates.ServiceTemplate, data)
+	content, err := createContentFromTemplate(templates.TemplateService, data)
 	logger.FatalIfErr(err)
 
 	err = writeStringToFile(filePath, content)

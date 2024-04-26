@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"path/filepath"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"gitlab.com/zigal0/architect/internal/cli/logger"
@@ -25,10 +23,11 @@ var servicesCmd = &cobra.Command{
 It generates code only for name that satisfies snake_case_name_service with name SnakeCaseNameService.
 `,
 	Run: func(_ *cobra.Command, args []string) {
-		logger.Info("Start services generation.")
+		const servicesString = "services"
+		logger.Infof(formatLogStartCreation, servicesString)
 
 		if len(args) == 0 {
-			logger.Fatal("No services name were provided.")
+			logger.Info("No services names were provided.")
 		}
 
 		moduleName, err := moduleFromGoMod()
@@ -36,39 +35,47 @@ It generates code only for name that satisfies snake_case_name_service with name
 
 		curProject := project.New(moduleName)
 
-		for _, rawServiceName := range args {
-			if !serviceNameRegExp.MatchString(rawServiceName) {
-				logger.Info(fmt.Sprintf("skip '%s' name", rawServiceName))
+		for _, serviceName := range args {
+			if !serviceNameRegExp.MatchString(serviceName) {
+				logger.Info(fmt.Sprintf("skip '%s' name", serviceName))
 
 				continue
 			}
 
-			createService(curProject, strings.TrimSpace(rawServiceName))
+			createProjectPart(projectPartInfo{
+				absPath:        curProject.AbsPath(),
+				pathParts:      []string{".gitignore"},
+				tmplt:          templates.TemplateGitIgnore,
+				tmpltData:      nil,
+				needToOverride: false,
+			})
+
+			for _, info := range projectPartInfosToGenerateService(curProject, serviceName) {
+				createProjectPart(info)
+			}
 		}
 
-		logger.Info("Finish services generation.")
+		logger.Infof(formatLogFinishCreation, servicesString)
 	},
 }
 
-func createService(curProject *project.Project, serviceName string) {
-	filePath := filepath.Join(
-		curProject.AbdPath(),
-		"internal", "api", serviceName+"_impl", "service.go",
-	)
-	if checkFileExist(filePath) {
-		return
+func projectPartInfosToGenerateService(
+	curProject *project.Project,
+	serviceName string,
+) []projectPartInfo {
+	baseParths := []string{layerNameiInternal, layerNameAPI, serviceName + "_impl"}
+
+	return []projectPartInfo{
+		{
+			absPath:   curProject.AbsPath(),
+			pathParts: append(baseParths, "service.go"),
+			tmplt:     templates.TemplateRepository,
+			tmpltData: templates.ServiceData{
+				Module:                             curProject.Module(),
+				ServiceName:                        serviceName,
+				ServiceNameCamelCaseWithFirstUpper: tool.ToCamelCaseWithFirstUpper(serviceName),
+			},
+			needToOverride: false,
+		},
 	}
-
-	data := templates.ServiceData{
-		Module:                             curProject.Module(),
-		ServiceName:                        serviceName,
-		ServiceNameCamelCaseWithFirstUpper: tool.ToCamelCaseWithFirstUpper(serviceName),
-	}
-
-	content, err := createContentFromTemplate(templates.TemplateService, data)
-	logger.FatalIfErr(err)
-
-	err = writeStringToFile(filePath, content)
-
-	logger.FatalIfErr(err)
 }

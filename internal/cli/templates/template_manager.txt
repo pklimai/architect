@@ -1,4 +1,4 @@
-package {{ .EntityPkgName }}
+package {{ .PkgName }}_manager
 
 type Manager struct {}
 

@@ -55,3 +55,6 @@ var TemplateInterface string
 
 //go:embed template_testing_test.txt
 var TemplateTestingTest string
+
+//go:embed template_repository.txt
+var TemplateRepository string

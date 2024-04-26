@@ -1,4 +1,4 @@
-package {{ .EntityPkgName }}_test
+package {{ .PkgName }}_test
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 
 	"github.com/gojuno/minimock/v3"
 	"github.com/stretchr/testify/assert"
-	{{ .EntityPkgName }}_{{ .EntityTypeName }} "{{ .FileDirPath }}"
+	"{{ .FileDirPath }}"
 )
 
 
@@ -19,7 +19,7 @@ type fixture struct {
     ctx context.Context
     *assert.Assertions
 
-    testEntity *{{ .EntityPkgName }}_{{ .EntityTypeName }}.{{ .EntityTypeNameWithUpperFirst }}
+    testEntity *{{ .PkgName }}.{{ .EntityTypeNameWithUpperFirst }}
 }
 
 
@@ -28,7 +28,7 @@ func setUp(t *testing.T) (f *fixture) {
 
 	ctrl := minimock.NewController(t)
 
-	testEntity := {{ .EntityPkgName }}_{{ .EntityTypeName }}.New()
+	testEntity := {{ .PkgName }}.New()
 
 	return &fixture{
 		ctx:        context.Background(),

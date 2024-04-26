@@ -28,7 +28,7 @@ func New(module string) *Project {
 	}
 }
 
-func (p *Project) AbdPath() string {
+func (p *Project) AbsPath() string {
 	return p.absPath
 }
 

@@ -31,4 +31,5 @@ func init() {
 
 	// add sub commands
 	addCmd.AddCommand(managerCmd)
+	addCmd.AddCommand(repositoryCmd)
 }

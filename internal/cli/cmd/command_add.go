@@ -2,11 +2,19 @@ package cmd
 
 import (
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"gitlab.com/zigal0/architect/internal/cli/logger"
 	"gitlab.com/zigal0/architect/internal/cli/project"
 	"gitlab.com/zigal0/architect/internal/cli/templates"
+)
+
+const (
+	formatLogStartCreation  = "Start %s creation."
+	formatLogFinishCreation = "Finish %s creation."
+
+	logNoEntityNameProvided = "No entity name was provided."
 )
 
 var addCmd = &cobra.Command{
@@ -16,17 +24,18 @@ var addCmd = &cobra.Command{
 }
 
 var managerCmd = &cobra.Command{
-	Use:   "manager",
+	Use:   entityTypeNameManager,
 	Short: "Generate new manager, top logic entity, with given pkg name.",
-	Long: `Create new manager, top logic entity in the specified path internal/business/manager/manager_name/manager.go.
+	// nolint: lll
+	Long: `Create new manager, top logic entity in the specified path internal/business/manager/manager_pkg_name/manager.go.
 Also adds file interfaces.go  with commands for minimock and testing_test.go in the same place if it do not exist.
 Name should satisfy snake_case.
 `,
 	Run: func(_ *cobra.Command, args []string) {
-		logger.Info("Start manager creation.")
+		logger.Infof(formatLogStartCreation, entityTypeNameManager)
 
 		if len(args) == 0 {
-			logger.Fatal("No manager pkg name was provided.")
+			logger.Fatal(logNoEntityNameProvided)
 		}
 		logger.FatalIfErr(validateEntityPkgName(args[0]))
 
@@ -35,12 +44,44 @@ Name should satisfy snake_case.
 
 		curProject := project.New(moduleName)
 
-		// create architect of application
-		for _, info := range projectPartInfosForManagerAdd(curProject, args[0]) {
+		for _, info := range projectPartInfosToAddManager(curProject, args[0]) {
 			createProjectPart(info)
 		}
 
-		logger.Info("Finish manager creation.")
+		logger.FatalIfErr(executeGoModTidy())
+
+		logger.Infof(formatLogFinishCreation, entityTypeNameManager)
+	},
+}
+
+var repositoryCmd = &cobra.Command{
+	Use:   entityTypeNameRepository,
+	Short: "Generate new repository with given pkg name.",
+	// nolint: lll
+	Long: `Create new repositoy based on sqlx in the specified path internal/adapter/repository/repository_pkg_name/repository.go.
+Also adds sql.go for quieries & model.go for data.
+Name should satisfy snake_case.
+`,
+	Run: func(_ *cobra.Command, args []string) {
+		logger.Infof(formatLogStartCreation, entityTypeNameRepository)
+
+		if len(args) == 0 {
+			logger.Fatal(logNoEntityNameProvided)
+		}
+		logger.FatalIfErr(validateEntityPkgName(args[0]))
+
+		moduleName, err := moduleFromGoMod()
+		logger.FatalIfErr(err)
+
+		curProject := project.New(moduleName)
+
+		for _, info := range projectPartInfosToAddRepository(curProject, args[0]) {
+			createProjectPart(info)
+		}
+
+		logger.FatalIfErr(executeGoModTidy())
+
+		logger.Infof(formatLogFinishCreation, entityTypeNameRepository)
 	},
 }
 
@@ -48,39 +89,62 @@ Name should satisfy snake_case.
 // Creation
 // --------------------//
 
-func projectPartInfosForManagerAdd(curProject *project.Project, managerPkgName string) []projectPartInfo {
-	baseParths := []string{"internal", "business", "manager", managerPkgName}
+func projectPartInfosToAddManager(
+	curProject *project.Project,
+	managerName string,
+) []projectPartInfo {
+	baseParths := []string{layerNameiInternal, layerNameBusiness, entityTypeNameManager, managerName}
+
+	pkgName := strings.Join([]string{managerName, entityTypeNameManager}, "_")
 
 	return []projectPartInfo{
 		{
-			curProject: curProject,
-			pathParts:  append(baseParths, "manager.go"),
-			tmplt:      templates.TemplateManager,
+			absPath:   curProject.AbsPath(),
+			pathParts: append(baseParths, entityTypeNameManager+extensionGo),
+			tmplt:     templates.TemplateManager,
 			tmpltData: templates.EntityData{
-				EntityPkgName: managerPkgName,
+				PkgName: pkgName,
 			},
 			needToOverride: false,
 		},
 		{
-			curProject: curProject,
-			pathParts:  append(baseParths, "interface.go"),
-			tmplt:      templates.TemplateInterface,
+			absPath:   curProject.AbsPath(),
+			pathParts: append(baseParths, fileNameInterface),
+			tmplt:     templates.TemplateInterface,
 			tmpltData: templates.EntityData{
-				EntityPkgName: managerPkgName,
+				PkgName: pkgName,
 			},
 			needToOverride: false,
 		},
 		{
-			curProject: curProject,
-			pathParts:  append(baseParths, "testing_test.go"),
-			tmplt:      templates.TemplateTestingTest,
+			absPath:   curProject.AbsPath(),
+			pathParts: append(baseParths, fileNameTestingTest),
+			tmplt:     templates.TemplateTestingTest,
 			tmpltData: templates.TestingTestData{
-				EntityPkgName: managerPkgName,
+				PkgName: pkgName,
 				FileDirPath: filepath.Join(
 					append([]string{curProject.Module()}, baseParths...)...,
 				),
-				EntityTypeName:               "manager",
-				EntityTypeNameWithUpperFirst: "Manager",
+				EntityTypeNameWithUpperFirst: upFirstLetter(entityTypeNameManager),
+			},
+			needToOverride: false,
+		},
+	}
+}
+
+func projectPartInfosToAddRepository(
+	curProject *project.Project,
+	pkgName string,
+) []projectPartInfo {
+	baseParths := []string{layerNameiInternal, layerNameAdapter, entityTypeNameRepository, pkgName}
+
+	return []projectPartInfo{
+		{
+			absPath:   curProject.AbsPath(),
+			pathParts: append(baseParths, entityTypeNameRepository+extensionGo),
+			tmplt:     templates.TemplateRepository,
+			tmpltData: templates.EntityData{
+				PkgName: pkgName,
 			},
 			needToOverride: false,
 		},

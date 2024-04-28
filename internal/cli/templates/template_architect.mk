@@ -63,7 +63,7 @@ ARCHITECT_BIN := $(LOCAL_BIN)/architect
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 	go install github.com/envoyproxy/protoc-gen-validate@latest
 	go install golang.org/x/tools/cmd/goimports@latest
-	go install gitlab.com/zigal0/architect@latest
+	go install gitlab.com/zigal0/architect/cmd/architect@latest
 	
 bin-deps: .bin-deps ## install necessary bin dependencies
 

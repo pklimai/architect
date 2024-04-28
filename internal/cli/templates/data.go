@@ -4,7 +4,7 @@ type CommonData struct {
 	ProjectName string
 }
 
-type ProtoServiceData struct {
+type ProtoAppServiceData struct {
 	Module                             string
 	ModuleForProto                     string
 	ProjectNameSnakeCase               string
@@ -37,4 +37,11 @@ type TestingTestData struct {
 	PkgName                               string
 	FileDirPath                           string
 	EntityTypeNameCamelCaseWithFirstUpper string
+}
+
+type ProtoServiceData struct {
+	Module                             string
+	ModuleForProto                     string
+	ServiceNameSnakeCase               string
+	ServiceNameCamelCaseWithFirstUpper string
 }

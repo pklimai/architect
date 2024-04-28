@@ -5,6 +5,7 @@ const (
 	entityTypeNameManager    = "manager"
 	entityTypeNameSubManager = "sub_manager"
 	entityTypeNameRepository = "repository"
+	entityTypeNameService    = "service"
 
 	// layer
 	layerNameiInternal = "internal"
@@ -14,7 +15,8 @@ const (
 	layerNameAdapter   = "adapter"
 
 	// extension
-	extensionGo = ".go"
+	extensionGo    = ".go"
+	extensionProto = ".proto"
 
 	// files
 	fileNameInterface   = "interface.go"

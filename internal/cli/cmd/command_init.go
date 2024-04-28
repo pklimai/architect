@@ -125,8 +125,8 @@ func projectPartInfosToInit(curProject *project.Project) []projectPartInfo {
 		{
 			absPath:   curProject.AbsPath(),
 			pathParts: []string{layerNameAPI, curProject.NameSnakeCase() + "_service", "service.proto"},
-			tmplt:     templates.TemplateProtoService,
-			tmpltData: templates.ProtoServiceData{
+			tmplt:     templates.TemplateProtoAppService,
+			tmpltData: templates.ProtoAppServiceData{
 				Module:                             curProject.Module(),
 				ModuleForProto:                     curProject.ModuleForProto(),
 				ProjectNameSnakeCase:               curProject.NameSnakeCase(),

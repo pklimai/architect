@@ -26,10 +26,10 @@ var TemplateGitlabCI string
 //go:embed template_protodep.toml
 var TemplateProtodepConfig string
 
-//go:embed template_proto_service.proto
-var TemplateProtoService string
+//go:embed template_proto_app_service.proto
+var TemplateProtoAppService string
 
-//go:embed template_generated_service.txt
+//go:embed template_service.txt
 var TemplateService string
 
 //go:embed template_swagger_hack.txt
@@ -58,3 +58,6 @@ var TemplateTestingTest string
 
 //go:embed template_repository.txt
 var TemplateRepository string
+
+//go:embed template_proto_service.proto
+var TemplateProtoService string

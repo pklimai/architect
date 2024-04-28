@@ -42,3 +42,11 @@ func validateEntityPkgName(name string) error {
 
 	return nil
 }
+
+func validateServiceName(name string) error {
+	if !serviceNameRegExp.MatchString(name) {
+		return fmt.Errorf("invalid service name '%s': not snake-case, no postfix _service or contains forbidden symbols, only alphanumeric & '_' allowed", name) // nolint: lll
+	}
+
+	return nil
+}

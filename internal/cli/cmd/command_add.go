@@ -61,7 +61,7 @@ Name should satisfy snake_case.
 
 var subManagerCmd = &cobra.Command{
 	Use:   entityTypeNameSubManager,
-	Short: "Generate new sub manager, bottom logic entity, with given name.",
+	Short: "Generate new sub manager, lower logic entity, with given name.",
 	// nolint: lll
 	Long: `Create new sub manager, bottom logic entity in the specified path internal/business/sub_manager/sub_manager_pkg_name/manager.go.
 Also adds file interfaces.go  with commands for minimock and testing_test.go in the same place if it do not exist.
@@ -134,6 +134,50 @@ Name should satisfy snake_case.
 		logger.FatalIfErr(executeGoModTidy())
 
 		logger.Infof(formatLogFinishCreation, entityTypeNameRepository)
+	},
+}
+
+var protoServiceCmd = &cobra.Command{
+	Use:   "proto-service",
+	Short: "Create proto contract for new service with given name.",
+	Long: `Create proto contract for new service in the specified path api/some_name_service/service.proto.
+It contains example service that should be override. 
+After changes you need to execute make target 'generate'.
+`,
+	Run: func(_ *cobra.Command, args []string) {
+		logger.Infof(formatLogStartCreation, "proto-service")
+
+		if len(args) == 0 {
+			logger.Fatal(logNoEntityNameProvided)
+		}
+
+		serviceName := args[0]
+
+		logger.FatalIfErr(validateServiceName(serviceName))
+
+		moduleName, err := moduleFromGoMod()
+		logger.FatalIfErr(err)
+
+		curProject := project.New(moduleName)
+
+		createProjectPart(projectPartInfo{
+			absPath: curProject.AbsPath(),
+			pathParts: []string{
+				layerNameAPI,
+				serviceName,
+				entityTypeNameService + extensionProto,
+			},
+			tmplt: templates.TemplateProtoService,
+			tmpltData: templates.ProtoServiceData{
+				Module:                             curProject.Module(),
+				ModuleForProto:                     curProject.ModuleForProto(),
+				ServiceNameSnakeCase:               serviceName,
+				ServiceNameCamelCaseWithFirstUpper: tool.ToCamelCaseWithFirstUpper(serviceName),
+			},
+			needToOverride: false,
+		})
+
+		logger.Infof(formatLogFinishCreation, "proto-service")
 	},
 }
 

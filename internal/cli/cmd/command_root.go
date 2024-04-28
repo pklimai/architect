@@ -25,6 +25,7 @@ func init() {
 	rootCmd.AddCommand(initCmd)
 	rootCmd.AddCommand(generateCmd)
 	rootCmd.AddCommand(addCmd)
+	rootCmd.AddCommand(showCmd)
 
 	// generate sub commands
 	generateCmd.AddCommand(servicesCmd)
@@ -33,4 +34,7 @@ func init() {
 	addCmd.AddCommand(managerCmd)
 	addCmd.AddCommand(subManagerCmd)
 	addCmd.AddCommand(repositoryCmd)
+
+	// show
+	showCmd.AddCommand(architectureCmd)
 }

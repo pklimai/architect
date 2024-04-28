@@ -24,7 +24,8 @@ Command scathces:
     - manager - adds base business-unit code + interfaces. [x]
     - sub manager - adds base business-unit code + interfaces. [x]
     - kafka (consumer/producer)kafka message broker - adds code for . Need to think more, mb some supestructure above kafka/rabbiMQ.
-    - cron - adds base code for cron. 
+    - cron - adds base code for cron.
+    - service - adds proto service. 
 - show - base for other show commands.
     - structure - shows architecture of application.
 
@@ -45,4 +46,5 @@ Command scathces:
 - Look in FUTURE section.
 - Change work with proto deps - now it's a little bit complicated (buf is a choice, but not in Russia).
 - Check build of application.
-- Add real gitlab CI/CD with building and pushing to docker-registry. 
+- Add real gitlab CI/CD with building and pushing to docker-registry.
+- Add integration tests 

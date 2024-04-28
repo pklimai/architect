@@ -43,14 +43,6 @@ It generates code only for name that satisfies snake_case_name_service with name
 			}
 
 			createProjectPart(projectPartInfo{
-				absPath:        curProject.AbsPath(),
-				pathParts:      []string{".gitignore"},
-				tmplt:          templates.TemplateGitIgnore,
-				tmpltData:      nil,
-				needToOverride: false,
-			})
-
-			createProjectPart(projectPartInfo{
 				absPath: curProject.AbsPath(),
 				pathParts: []string{
 					layerNameiInternal,
@@ -58,7 +50,7 @@ It generates code only for name that satisfies snake_case_name_service with name
 					serviceName + "_impl",
 					"service.go",
 				},
-				tmplt: templates.TemplateRepository,
+				tmplt: templates.TemplateService,
 				tmpltData: templates.ServiceData{
 					Module:                             curProject.Module(),
 					ServiceName:                        serviceName,

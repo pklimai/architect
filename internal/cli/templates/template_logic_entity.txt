@@ -1,0 +1,7 @@
+package {{ .PkgName }}
+
+type {{ .EntityTypeNameCamelCaseWithFirstUpper }} struct {}
+
+func New() *{{ .EntityTypeNameCamelCaseWithFirstUpper }} {
+    return &{{ .EntityTypeNameCamelCaseWithFirstUpper }}{}
+}

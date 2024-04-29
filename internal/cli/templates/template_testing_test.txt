@@ -1,0 +1,41 @@
+package {{ .PkgName }}_test
+
+import (
+	"context"
+	"errors"
+	"testing"
+
+	"github.com/gojuno/minimock/v3"
+	"github.com/stretchr/testify/assert"
+	"{{ .FileDirPath }}"
+)
+
+
+var (
+    errForTest = errors.New("error for test")
+)
+
+type fixture struct {
+    ctx context.Context
+    *assert.Assertions
+
+    testEntity *{{ .PkgName }}.{{ .EntityTypeNameCamelCaseWithFirstUpper }}
+}
+
+
+func setUp(t *testing.T) (f *fixture) {
+	t.Helper()
+
+	ctrl := minimock.NewController(t)
+
+	testEntity := {{ .PkgName }}.New()
+
+	return &fixture{
+		ctx:        context.Background(),
+		Assertions: assert.New(ctrl),
+
+		testEntity: testEntity,
+	}
+}
+
+

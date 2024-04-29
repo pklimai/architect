@@ -1,0 +1,10 @@
+
+
+[[dependencies]]
+  target = "{{ .ModuleWithPathToProtoDir }}"
+  branch = "{{ .Branch }}"
+  path = "client/{{ .ClientNameSnakeCase }}"
+  includes = [
+    "{{ .PtotoFileName }}",
+  ]
+  protocol = "https"

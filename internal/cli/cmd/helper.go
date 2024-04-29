@@ -9,12 +9,10 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"text/template"
 
 	"gitlab.com/zigal0/architect/internal/cli/logger"
-	"gitlab.com/zigal0/architect/internal/cli/project"
 )
 
 // Errors
@@ -32,14 +30,8 @@ const (
 	goModFileName = "go.mod"
 )
 
-// RegExp
-var (
-	serviceNameRegExp = regexp.MustCompile("^([a-zA-Z]+_)+service$")
-	projectNameRegExp = regexp.MustCompile("^[a-zA-Z][a-zA-Z0-9-]*$")
-)
-
 type projectPartInfo struct {
-	curProject     *project.Project
+	absPath        string
 	pathParts      []string
 	tmplt          string
 	tmpltData      any
@@ -59,7 +51,7 @@ func createProjectPart(info projectPartInfo) {
 		logger.Fatal("Incorrect info to create poject part")
 	}
 
-	pathParts := append([]string{info.curProject.AbdPath()}, info.pathParts...)
+	pathParts := append([]string{info.absPath}, info.pathParts...)
 
 	logger.Infof("Creating %s...", pathParts[len(pathParts)-1])
 
@@ -75,17 +67,38 @@ func createProjectPart(info projectPartInfo) {
 	logger.FatalIfErr(writeStringToFile(filePath, content))
 }
 
+func appendToProjectPart(info projectPartInfo) {
+	if len(info.pathParts) == 0 {
+		logger.Fatal("Incorrect info to append to poject part")
+	}
+
+	pathParts := append([]string{info.absPath}, info.pathParts...)
+
+	logger.Infof("Appending %s...", pathParts[len(pathParts)-1])
+
+	filePath := filepath.Join(pathParts...)
+
+	if !checkFileExist(filePath) {
+		return
+	}
+
+	content, err := createContentFromTemplate(info.tmplt, info.tmpltData)
+	logger.FatalIfErr(err)
+
+	logger.FatalIfErr(appendStringToFile(filePath, content))
+}
+
 func createContentFromTemplate(templateSrc string, data any) (string, error) {
 	tmpl, err := template.New("").Parse(templateSrc)
 	if err != nil {
-		return "", fmt.Errorf("failed to parse source template with data %T: %w", data, err)
+		return "", fmt.Errorf("failed to parse source template: %w", err)
 	}
 
 	buf := bytes.Buffer{}
 
 	err = tmpl.Execute(&buf, data)
 	if err != nil {
-		return "", fmt.Errorf("failed to execute teplate with data %T: %w", data, err)
+		return "", fmt.Errorf("failed to execute teplate: %w", err)
 	}
 
 	return buf.String(), nil
@@ -108,6 +121,24 @@ func writeStringToFile(rawFilePath, content string) error {
 	defer func() { _ = file.Close() }()
 
 	_, err = file.Write([]byte(content))
+	if err != nil {
+		return fmt.Errorf(formatErrFileAction, writeFileAction, cleanPath, err)
+	}
+
+	return nil
+}
+
+func appendStringToFile(rawFilePath, content string) error {
+	cleanPath := filepath.Clean(rawFilePath)
+
+	file, err := os.OpenFile(cleanPath, os.O_APPEND|os.O_WRONLY, 0600) // nolint: gomnd
+	if err != nil {
+		return fmt.Errorf(formatErrFileAction, openFileAction, cleanPath, err)
+	}
+
+	defer func() { _ = file.Close() }()
+
+	_, err = file.WriteString(content)
 	if err != nil {
 		return fmt.Errorf(formatErrFileAction, writeFileAction, cleanPath, err)
 	}
@@ -151,10 +182,6 @@ func moduleFromGoMod() (string, error) {
 	return module, nil
 }
 
-func executeMake(target, path string) error {
-	return execute("make", "-C", path, target)
-}
-
 func execute(commandName string, args ...string) error {
 	logger.Info(fmt.Sprintf("Executing command '%s' with args: %q...", commandName, args))
 
@@ -169,4 +196,12 @@ func execute(commandName string, args ...string) error {
 	}
 
 	return nil
+}
+
+func executeMake(target, path string) error {
+	return execute("make", "-C", path, target)
+}
+
+func executeGoModTidy() error {
+	return execute("go", "mod", "tidy")
 }

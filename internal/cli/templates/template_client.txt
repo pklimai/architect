@@ -1,0 +1,11 @@
+package {{ .PkgName }}
+
+import (
+	"google.golang.org/grpc"
+)
+
+type Client struct {}
+
+func New(conn *grpc.ClientConn) *Client {
+	return &Client{}
+}

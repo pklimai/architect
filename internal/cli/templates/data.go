@@ -4,10 +4,10 @@ type CommonData struct {
 	ProjectName string
 }
 
-type ProtoServiceData struct {
+type ProtoAppServiceData struct {
 	Module                             string
 	ModuleForProto                     string
-	ProjectNameUnderscored             string
+	ProjectNameSnakeCase               string
 	ProjectNameCamelCaseWithFirstUpper string
 	ProjectName                        string
 }
@@ -22,4 +22,33 @@ type MainData struct {
 	ProjectNameSnakeCase               string
 	Module                             string
 	ProjectNameCamelCaseWithFirstLower string
+}
+
+type EntityData struct {
+	PkgName string
+}
+
+type LogicEntityData struct {
+	PkgName                               string
+	EntityTypeNameCamelCaseWithFirstUpper string
+}
+
+type TestingTestData struct {
+	PkgName                               string
+	FileDirPath                           string
+	EntityTypeNameCamelCaseWithFirstUpper string
+}
+
+type ProtoServiceData struct {
+	Module                             string
+	ModuleForProto                     string
+	ServiceNameSnakeCase               string
+	ServiceNameCamelCaseWithFirstUpper string
+}
+
+type ProtodepClientData struct {
+	ModuleWithPathToProtoDir string
+	Branch                   string
+	ClientNameSnakeCase      string
+	PtotoFileName            string
 }

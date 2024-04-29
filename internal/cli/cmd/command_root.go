@@ -21,8 +21,22 @@ func Execute() {
 
 // init initialize and bind all cli commands
 func init() {
+	// root subcommmands
 	rootCmd.AddCommand(initCmd)
 	rootCmd.AddCommand(generateCmd)
+	rootCmd.AddCommand(addCmd)
+	rootCmd.AddCommand(showCmd)
 
+	// generate sub commands
 	generateCmd.AddCommand(servicesCmd)
+
+	// add sub commands
+	addCmd.AddCommand(managerCmd)
+	addCmd.AddCommand(subManagerCmd)
+	addCmd.AddCommand(repositoryCmd)
+	addCmd.AddCommand(protoServiceCmd)
+	addCmd.AddCommand(clientCmd)
+
+	// show
+	showCmd.AddCommand(architectureCmd)
 }

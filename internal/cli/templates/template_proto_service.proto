@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package {{ .ModuleForProto }}.api.{{ .ServiceNameSnakeCase }};
+
+option go_package = "{{ .Module }}/internal/generated/api/{{ .ServiceNameSnakeCase }};{{ .ServiceNameSnakeCase }}";
+
+import "google/api/annotations.proto";
+
+service {{ .ServiceNameCamelCaseWithFirstUpper }} {
+    // Example get handler.
+    rpc GetSomeDataV1 (GetSomeDataV1Request) returns (GetSomeDataV1Response) {
+        option (google.api.http) = {
+            get: "/{{ .ServiceNameSnakeCase }}/v1/get-employee",
+        };
+    }
+}
+
+// --------------- HANLDER TYPES ---------------
+
+message GetSomeDataV1Request {}
+
+message GetSomeDataV1Response {}

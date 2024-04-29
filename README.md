@@ -17,15 +17,17 @@ In the best case architect allow to construct artcitecture of application on the
 
 ### Details
 Command scathces:
-- add - base for other add commands.
-    - client - adds clinet for other service + connection base. In best case - generate form proto client code.
+- add - base for other add commands. [x]
+    - client - adds clinet for other service + connection base. In best case - generate form proto client code. [x]
     - postgres - adds code for connection to postgres. Can consider other DBs. 
-    - repo - adds base repo code. 
-    - manager - adds base business-unit code + interfaces.
+    - repo - adds base repo code. [x]
+    - manager - adds base business-unit code + interfaces. [x]
+    - sub manager - adds base business-unit code + interfaces. [x]
     - kafka (consumer/producer)kafka message broker - adds code for . Need to think more, mb some supestructure above kafka/rabbiMQ.
-    - cron - adds base code for cron. 
+    - cron - adds base code for cron.
+    - proto-service - adds proto service. [x]
 - show - base for other show commands.
-    - structure - shows architecture of application.
+    - structure - shows architecture of application. [x]
 
 ## TODO
 - Move from env to yaml config ([viper](https://github.com/rakyll/statik)).
@@ -44,4 +46,8 @@ Command scathces:
 - Look in FUTURE section.
 - Change work with proto deps - now it's a little bit complicated (buf is a choice, but not in Russia).
 - Check build of application.
-- Add real gitlab CI/CD with building and pushing to docker-registry. 
+- Add real gitlab CI/CD with building and pushing to docker-registry.
+- Add integration tests.
+- Support for windows & macOS
+- Client add is very dirty. Need to rethink approach. Need checks and clean code. 
+- Short flag for command architecture.

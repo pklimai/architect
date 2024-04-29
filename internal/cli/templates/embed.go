@@ -2,47 +2,71 @@ package templates
 
 import _ "embed"
 
-//go:embed .gitignore
-var GitIgnoreTemplate string
+//go:embed template_gitignore
+var TemplateGitIgnore string
 
-//go:embed .gitattributes
-var GitAttributesTemplate string
+//go:embed template_gitattributes
+var TemplateGitAttributes string
 
-//go:embed architect.mk
-var ArchitectMKTemplate string
+//go:embed template_architect.mk
+var TemplateArchitectMK string
 
-//go:embed Makefile
-var MakefileTemplate string
+//go:embed template_makefile
+var TemplateMakefile string
 
-//go:embed .golangci.yaml
-var GolangCITemplate string
+//go:embed template_golangci.yaml
+var TemplateGolangCI string
 
-//go:embed Dockerfile
-var DockerfileTempalte string
+//go:embed template_dockerfile
+var TemplateDockerfile string
 
-//go:embed .gitlab-ci.yml
-var GitlabCITemplate string
+//go:embed template_gitlab-ci.yml
+var TemplateGitlabCI string
 
-//go:embed protodep.toml
-var ProtodepConfigTemplate string
+//go:embed template_protodep.toml
+var TemplateProtodepConfig string
 
-//go:embed service.proto
-var ProtoServiceTemplate string
+//go:embed template_proto_app_service.proto
+var TemplateProtoAppService string
 
-//go:embed generated_service.txt
-var ServiceTemplate string
+//go:embed template_service.txt
+var TemplateService string
 
-//go:embed swagger_hack.txt
-var SwaggerHackTemplate string
+//go:embed template_swagger_hack.txt
+var TemplateSwaggerHack string
 
-//go:embed main.txt
-var MainTemplate string
+//go:embed template_main.txt
+var TemplateMain string
 
-//go:embed config.txt
-var ConfigTemplate string
+//go:embed template_config.txt
+var TemplateConfig string
 
-//go:embed env_local_example.env
-var EnvLocalExampleTemplate string
+//go:embed template_env_local_example.env
+var TemplateEnvLocalExample string
 
-//go:embed generate_swagger_ui.sh
-var GenerateSwaggerUITemplate string
+//go:embed template_generate_swagger_ui.sh
+var TemplateGenerateSwaggerUI string
+
+//go:embed template_logic_entity.txt
+var TemplateLogicEntity string
+
+//go:embed template_interface.txt
+var TemplateInterface string
+
+//go:embed template_testing_test.txt
+var TemplateTestingTest string
+
+//go:embed template_repository.txt
+var TemplateRepository string
+
+//go:embed template_proto_service.proto
+var TemplateProtoService string
+
+//go:embed template_provider.txt
+var TemplateProvider string
+
+//go:embed template_client.txt
+var TemplateClient string
+
+//go:embed template_protodep_client.toml
+var TemplateProtodepClient string

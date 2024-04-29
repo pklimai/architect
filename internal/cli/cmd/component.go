@@ -6,13 +6,14 @@ const (
 	entityTypeNameSubManager = "sub_manager"
 	entityTypeNameRepository = "repository"
 	entityTypeNameService    = "service"
+	entityTypeNameClient     = "client"
 
 	// layer
-	layerNameiInternal = "internal"
-	layerNameBusiness  = "business"
-	layerNameAPI       = "api"
-	layerNameConfig    = "config"
-	layerNameAdapter   = "adapter"
+	layerNameInternal = "internal"
+	layerNameBusiness = "business"
+	layerNameAPI      = "api"
+	layerNameConfig   = "config"
+	layerNameAdapter  = "adapter"
 
 	// extension
 	extensionGo    = ".go"
@@ -21,4 +22,6 @@ const (
 	// files
 	fileNameInterface   = "interface.go"
 	fileNameTestingTest = "testing_test.go"
+	fileNameProvider    = "provider.go"
+	fileNameProtodep    = "protodep.toml"
 )

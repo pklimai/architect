@@ -118,7 +118,7 @@ Name should satisfy snake_case.
 		createProjectPart(projectPartInfo{
 			absPath: curProject.AbsPath(),
 			pathParts: []string{
-				layerNameiInternal,
+				layerNameInternal,
 				layerNameAdapter,
 				entityTypeNameRepository,
 				args[0],
@@ -126,7 +126,7 @@ Name should satisfy snake_case.
 			},
 			tmplt: templates.TemplateRepository,
 			tmpltData: templates.EntityData{
-				PkgName: args[0],
+				PkgName: args[0] + "_" + entityTypeNameRepository,
 			},
 			needToOverride: false,
 		})
@@ -181,6 +181,75 @@ After changes you need to execute make target 'generate'.
 	},
 }
 
+var clientCmd = &cobra.Command{
+	Use:   "client",
+	Short: "Generate code for connect with given client via gRPC.",
+	// nolint: lll
+	Long: `Generate code for connect with given client via gRPC in the specified path internal/adapter/client/client_name/client.proto.
+It adds contracnts to protodep.toml. Also it generates connection provider if it's not exist.
+For execution requires 2 arguments: 
+* client name in snake_case;
+* path to proto contract with branch (e.g. gitalb.com/project/api/service/service.proto@main).
+After changes you need to execute make target 'generate' and add code for gRPC connection in new client.go.
+`,
+	Run: func(_ *cobra.Command, args []string) {
+		logger.Infof(formatLogStartCreation, entityTypeNameClient)
+
+		if len(args) != 2 {
+			logger.Fatal("Incorrect number of arguments, need client_name and path to proto contract.")
+		}
+
+		clientName := args[0]
+		logger.FatalIfErr(validateEntityPkgName(clientName))
+
+		fullPathToProto := args[1]
+		logger.FatalIfErr(validateProtoContractsPath(fullPathToProto))
+
+		moduleName, err := moduleFromGoMod()
+		logger.FatalIfErr(err)
+
+		curProject := project.New(moduleName)
+
+		createProjectPart(projectPartInfo{
+			absPath: curProject.AbsPath(),
+			pathParts: []string{
+				layerNameInternal,
+				layerNameAdapter,
+				entityTypeNameClient,
+				fileNameProvider,
+			},
+			tmplt:          templates.TemplateProvider,
+			tmpltData:      nil,
+			needToOverride: false,
+		})
+
+		createProjectPart(projectPartInfo{
+			absPath: curProject.AbsPath(),
+			pathParts: []string{
+				layerNameInternal,
+				layerNameAdapter,
+				entityTypeNameClient,
+				clientName,
+				entityTypeNameClient + extensionGo,
+			},
+			tmplt: templates.TemplateClient,
+			tmpltData: templates.EntityData{
+				PkgName: clientName + "_" + "client",
+			},
+			needToOverride: false,
+		})
+
+		appendToProjectPart(projectPartInfo{
+			absPath:   curProject.AbsPath(),
+			pathParts: []string{fileNameProtodep},
+			tmplt:     templates.TemplateProtodepClient,
+			tmpltData: constructProtodepClientData(fullPathToProto, clientName),
+		})
+
+		logger.Infof(formatLogFinishCreation, entityTypeNameClient)
+	},
+}
+
 // --------------------//
 // Creation
 // --------------------//
@@ -190,7 +259,7 @@ func projectPartInfosToAddLogicEntity(
 	entityTypeName string,
 	entityName string,
 ) []projectPartInfo {
-	baseParths := []string{layerNameiInternal, layerNameBusiness, entityTypeName, entityName}
+	baseParths := []string{layerNameInternal, layerNameBusiness, entityTypeName, entityName}
 
 	pkgName := strings.Join([]string{entityName, entityTypeName}, "_")
 
@@ -229,5 +298,34 @@ func projectPartInfosToAddLogicEntity(
 			},
 			needToOverride: false,
 		},
+	}
+}
+
+func constructProtodepClientData(
+	fullPathToProto, clientName string,
+) templates.ProtodepClientData {
+	pathToProtoAndBranch := strings.Split(fullPathToProto, "@")
+	if len(pathToProtoAndBranch) != 2 {
+		logger.Fatalf("no branch name was porvided in '%s'", fullPathToProto)
+	}
+
+	pathToProto := pathToProtoAndBranch[0]
+
+	branch := pathToProtoAndBranch[1]
+
+	separatorIndex := strings.LastIndex(pathToProto, "/")
+
+	if separatorIndex == -1 {
+		logger.Fatalf("incorrect path to proto contracts in '%s'", fullPathToProto)
+	}
+
+	moduleWithPathToProtoDir := pathToProto[0:separatorIndex]
+	protoFileName := pathToProto[separatorIndex+1:]
+
+	return templates.ProtodepClientData{
+		ModuleWithPathToProtoDir: moduleWithPathToProtoDir,
+		ClientNameSnakeCase:      clientName,
+		Branch:                   branch,
+		PtotoFileName:            protoFileName,
 	}
 }

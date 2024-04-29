@@ -35,6 +35,7 @@ func init() {
 	addCmd.AddCommand(subManagerCmd)
 	addCmd.AddCommand(repositoryCmd)
 	addCmd.AddCommand(protoServiceCmd)
+	addCmd.AddCommand(clientCmd)
 
 	// show
 	showCmd.AddCommand(architectureCmd)

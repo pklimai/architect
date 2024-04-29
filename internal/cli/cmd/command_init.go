@@ -149,7 +149,7 @@ func projectPartInfosToInit(curProject *project.Project) []projectPartInfo {
 		// TODO: dirty hack for swagger, need to fix
 		{
 			absPath:        curProject.AbsPath(),
-			pathParts:      []string{layerNameiInternal, "generated", "swagger", "embed.go"},
+			pathParts:      []string{layerNameInternal, "generated", "swagger", "embed.go"},
 			tmplt:          templates.TemplateSwaggerHack,
 			tmpltData:      nil,
 			needToOverride: false,

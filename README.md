@@ -18,7 +18,7 @@ In the best case architect allow to construct artcitecture of application on the
 ### Details
 Command scathces:
 - add - base for other add commands. [x]
-    - client - adds clinet for other service + connection base. In best case - generate form proto client code.
+    - client - adds clinet for other service + connection base. In best case - generate form proto client code. [x]
     - postgres - adds code for connection to postgres. Can consider other DBs. 
     - repo - adds base repo code. [x]
     - manager - adds base business-unit code + interfaces. [x]
@@ -48,3 +48,6 @@ Command scathces:
 - Check build of application.
 - Add real gitlab CI/CD with building and pushing to docker-registry.
 - Add integration tests.
+- Support for windows & macOS
+- Client add is very dirty. Need to rethink approach. Need checks and clean code. 
+- Short flag for command architecture.

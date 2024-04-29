@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strings"
@@ -10,9 +11,10 @@ import (
 
 // RegExp
 var (
-	serviceNameRegExp = regexp.MustCompile(`^([a-zA-Z]+_)+service$`)
-	kebabCaseRegExp   = regexp.MustCompile(`^[a-zA-Z]+(-[a-zA-Z]+)*$`)
-	snakeCaseRegExp   = regexp.MustCompile(`^[a-zA-Z]+(_[a-zA-Z]+)*$`)
+	serviceNameRegExp        = regexp.MustCompile(`^([a-zA-Z]+_)+service$`)
+	kebabCaseRegExp          = regexp.MustCompile(`^[a-zA-Z]+(-[a-zA-Z]+)*$`)
+	snakeCaseRegExp          = regexp.MustCompile(`^[a-zA-Z]+(_[a-zA-Z]+)*$`)
+	protoContractsPathRegExp = regexp.MustCompile(`^.+\/.+\.proto@.+$`)
 )
 
 func validateModule(moduleName string) error {
@@ -46,6 +48,14 @@ func validateEntityPkgName(name string) error {
 func validateServiceName(name string) error {
 	if !serviceNameRegExp.MatchString(name) {
 		return fmt.Errorf("invalid service name '%s': not snake-case, no postfix _service or contains forbidden symbols, only alphanumeric & '_' allowed", name) // nolint: lll
+	}
+
+	return nil
+}
+
+func validateProtoContractsPath(name string) error {
+	if !protoContractsPathRegExp.MatchString(name) {
+		return errors.New("invalid proto contrcts path, follow the example: gitalb.com/project/api/service/service.proto@main") // nolint: lll
 	}
 
 	return nil

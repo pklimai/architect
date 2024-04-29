@@ -67,6 +67,27 @@ func createProjectPart(info projectPartInfo) {
 	logger.FatalIfErr(writeStringToFile(filePath, content))
 }
 
+func appendToProjectPart(info projectPartInfo) {
+	if len(info.pathParts) == 0 {
+		logger.Fatal("Incorrect info to append to poject part")
+	}
+
+	pathParts := append([]string{info.absPath}, info.pathParts...)
+
+	logger.Infof("Appending %s...", pathParts[len(pathParts)-1])
+
+	filePath := filepath.Join(pathParts...)
+
+	if !checkFileExist(filePath) {
+		return
+	}
+
+	content, err := createContentFromTemplate(info.tmplt, info.tmpltData)
+	logger.FatalIfErr(err)
+
+	logger.FatalIfErr(appendStringToFile(filePath, content))
+}
+
 func createContentFromTemplate(templateSrc string, data any) (string, error) {
 	tmpl, err := template.New("").Parse(templateSrc)
 	if err != nil {
@@ -100,6 +121,24 @@ func writeStringToFile(rawFilePath, content string) error {
 	defer func() { _ = file.Close() }()
 
 	_, err = file.Write([]byte(content))
+	if err != nil {
+		return fmt.Errorf(formatErrFileAction, writeFileAction, cleanPath, err)
+	}
+
+	return nil
+}
+
+func appendStringToFile(rawFilePath, content string) error {
+	cleanPath := filepath.Clean(rawFilePath)
+
+	file, err := os.OpenFile(cleanPath, os.O_APPEND|os.O_WRONLY, 0600) // nolint: gomnd
+	if err != nil {
+		return fmt.Errorf(formatErrFileAction, openFileAction, cleanPath, err)
+	}
+
+	defer func() { _ = file.Close() }()
+
+	_, err = file.WriteString(content)
 	if err != nil {
 		return fmt.Errorf(formatErrFileAction, writeFileAction, cleanPath, err)
 	}
@@ -165,12 +204,4 @@ func executeMake(target, path string) error {
 
 func executeGoModTidy() error {
 	return execute("go", "mod", "tidy")
-}
-
-func upFirstLetter(s string) string {
-	if len(s) == 0 {
-		return ""
-	}
-
-	return strings.ToUpper(s[:1]) + s[1:]
 }

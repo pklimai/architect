@@ -16,7 +16,7 @@ var architectureCmd = &cobra.Command{
 	Use:   "architecture",
 	Short: "Show architecture of the architect based application.",
 	Long:  "Show components of architect based application with short info.",
-	Run: func(_ *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		// nolint: forbidigo
 		fmt.Print(architectureCmdOutput)
 	},

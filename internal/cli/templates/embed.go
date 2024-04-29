@@ -61,3 +61,12 @@ var TemplateRepository string
 
 //go:embed template_proto_service.proto
 var TemplateProtoService string
+
+//go:embed template_provider.txt
+var TemplateProvider string
+
+//go:embed template_client.txt
+var TemplateClient string
+
+//go:embed template_protodep_client.toml
+var TemplateProtodepClient string

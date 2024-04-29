@@ -45,7 +45,7 @@ It generates code only for name that satisfies snake_case_name_service with name
 			createProjectPart(projectPartInfo{
 				absPath: curProject.AbsPath(),
 				pathParts: []string{
-					layerNameiInternal,
+					layerNameInternal,
 					layerNameAPI,
 					serviceName + "_impl",
 					"service.go",

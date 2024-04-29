@@ -45,3 +45,10 @@ type ProtoServiceData struct {
 	ServiceNameSnakeCase               string
 	ServiceNameCamelCaseWithFirstUpper string
 }
+
+type ProtodepClientData struct {
+	ModuleWithPathToProtoDir string
+	Branch                   string
+	ClientNameSnakeCase      string
+	PtotoFileName            string
+}

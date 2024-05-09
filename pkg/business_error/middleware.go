@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // HandleErrorMiddleware - middleware for logging errors and converting them to gRPC format.
@@ -22,6 +23,10 @@ func HandleErrorMiddleware(enableLog bool) grpc.UnaryServerInterceptor {
 		resp, err := handler(ctx, req)
 		if err == nil {
 			return resp, nil
+		}
+
+		if _, ok := status.FromError(err); ok {
+			return resp, err
 		}
 
 		err = fmt.Errorf(constructServiceAndHandlerFromat(info.FullMethod), err)

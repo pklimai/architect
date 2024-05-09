@@ -52,3 +52,8 @@ Command scathces:
 - Client add is very dirty. Need to rethink approach. Need checks and clean code. 
 - Short flag for command architecture.
 - Add help for makefiles. [x]
+- Add work with metrics.
+- Fix business_error. Now it throws Internal errors mo matter if higher was thwon other gRPC error. 
+- Add work with flags (ports & etc).
+- Add work with middleware. User can define middleware in architect.NewApp() func. Mb some default.
+- Fix work with CORS. Now it works only for GET methods.

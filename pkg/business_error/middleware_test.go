@@ -152,4 +152,28 @@ func Test_HandleErrorMiddleware(t *testing.T) {
 		f.Empty(res, "response")
 		f.NoError(err, "error")
 	})
+
+	t.Run("nil error", func(t *testing.T) {
+		t.Parallel()
+
+		// arrange
+		f := setUp(t)
+
+		var (
+			handler = grpc.UnaryHandler(
+				func(context.Context, interface{}) (interface{}, error) {
+					return nil, status.Error(codes.Unimplemented, errMsgForTest)
+				},
+			)
+		)
+
+		mw := business_error.HandleErrorMiddleware(true)
+
+		// act
+		res, err := mw(f.ctx, nil, info, handler)
+
+		// assert
+		f.Empty(res, "response")
+		f.Equal(codes.Unimplemented, status.Code(err))
+	})
 }

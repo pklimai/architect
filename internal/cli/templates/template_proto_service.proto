@@ -10,7 +10,7 @@ service {{ .ServiceNameCamelCaseWithFirstUpper }} {
     // Example get handler.
     rpc GetSomeDataV1 (GetSomeDataV1Request) returns (GetSomeDataV1Response) {
         option (google.api.http) = {
-            get: "/{{ .ServiceNameSnakeCase }}/v1/get-employee",
+            get: "/{{ .ServiceNameSnakeCase }}/v1/get-some-data",
         };
     }
 }

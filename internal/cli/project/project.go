@@ -53,11 +53,5 @@ func (p *Project) Module() string {
 }
 
 func (p *Project) ModuleForProto() string {
-	moduleParts := strings.Split(p.module, "/")
-
-	modulePartsWithoutName := moduleParts[:len(moduleParts)-1]
-
-	moduleWithDots := strings.Join(modulePartsWithoutName, ".")
-
-	return moduleWithDots + "." + p.NameSnakeCase()
+	return strings.ReplaceAll(strings.ReplaceAll(p.module, "/", "."), "-", "_")
 }

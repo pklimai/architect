@@ -26,7 +26,7 @@ var addCmd = &cobra.Command{
 
 var managerCmd = &cobra.Command{
 	Use:   entityTypeNameManager,
-	Short: "Generate new manager, top logic entity, with given name.",
+	Short: "Generate new manager, top logic entity, with given name",
 	// nolint: lll
 	Long: `Create new manager, top logic entity in the specified path internal/business/manager/manager_pkg_name/manager.go.
 Also adds file interfaces.go  with commands for minimock and testing_test.go in the same place if it do not exist.
@@ -61,7 +61,7 @@ Name should satisfy snake_case.
 
 var subManagerCmd = &cobra.Command{
 	Use:   entityTypeNameSubManager,
-	Short: "Generate new sub manager, lower logic entity, with given name.",
+	Short: "Generate new sub manager, lower logic entity, with given name",
 	// nolint: lll
 	Long: `Create new sub manager, bottom logic entity in the specified path internal/business/sub_manager/sub_manager_pkg_name/manager.go.
 Also adds file interfaces.go  with commands for minimock and testing_test.go in the same place if it do not exist.
@@ -96,7 +96,7 @@ Name should satisfy snake_case.
 
 var repositoryCmd = &cobra.Command{
 	Use:   entityTypeNameRepository,
-	Short: "Generate new repository with given name.",
+	Short: "Generate new repository with given name",
 	// nolint: lll
 	Long: `Create new repositoy based on sqlx in the specified path internal/adapter/repository/repository_pkg_name/repository.go.
 Also adds sql.go for quieries & model.go for data.
@@ -139,7 +139,7 @@ Name should satisfy snake_case.
 
 var protoServiceCmd = &cobra.Command{
 	Use:   "proto-service",
-	Short: "Create proto contract for new service with given name.",
+	Short: "Create proto contract for new service with given name",
 	Long: `Create proto contract for new service in the specified path api/some_name_service/service.proto.
 It contains example service that should be override. 
 After changes you need to execute make target 'generate'.
@@ -183,7 +183,7 @@ After changes you need to execute make target 'generate'.
 
 var clientCmd = &cobra.Command{
 	Use:   "client",
-	Short: "Generate code for connect with given client via gRPC.",
+	Short: "Generate code for connect with given client via gRPC",
 	// nolint: lll
 	Long: `Generate code for connect with given client via gRPC in the specified path internal/adapter/client/client_name/client.proto.
 It adds contracnts to protodep.toml. Also it generates connection provider if it's not exist.

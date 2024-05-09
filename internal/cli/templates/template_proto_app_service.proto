@@ -9,11 +9,14 @@ import "validate/validate.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+    info: {
+        title: "{{ .ProjectName }}";
+    };
     host: "localhost:7000";
     external_docs: {
       url: "https://{{ .Module }}";
       description: "API for {{ .ProjectName }} application.";
-    }
+    };
     schemes: [HTTP, HTTPS];
     consumes: "application/json";
     produces: "application/json";

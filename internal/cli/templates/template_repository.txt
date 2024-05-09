@@ -1,4 +1,4 @@
-package {{ .PkgName }}_repository
+package {{ .PkgName }}
 
 import(
     "github.com/jmoiron/sqlx"

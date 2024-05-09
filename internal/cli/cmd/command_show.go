@@ -8,13 +8,13 @@ import (
 
 var showCmd = &cobra.Command{
 	Use:   "show",
-	Short: "Base for other show sub commands.",
+	Short: "Base for other show sub commands",
 	Long:  "Command is a root for various show sub commands.",
 }
 
 var architectureCmd = &cobra.Command{
 	Use:   "architecture",
-	Short: "Show architecture of the architect based application.",
+	Short: "Show architecture of the architect based application",
 	Long:  "Show components of architect based application with short info.",
 	Run: func(_ *cobra.Command, _ []string) {
 		// nolint: forbidigo

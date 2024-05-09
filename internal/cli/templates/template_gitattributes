@@ -7,4 +7,4 @@ protodep.lock -diff
 go.sum -diff
 **/mocks/** -diff
 
-/internal/generated
+/internal/generated -diff

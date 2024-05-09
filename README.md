@@ -20,9 +20,9 @@ Command scathces:
 - add - base for other add commands. [x]
     - client - adds clinet for other service + connection base. In best case - generate form proto client code. [x]
     - postgres - adds code for connection to postgres. Can consider other DBs. 
-    - repo - adds base repo code. [x]
+    - repository - adds base repo code. [x]
     - manager - adds base business-unit code + interfaces. [x]
-    - sub manager - adds base business-unit code + interfaces. [x]
+    - sub_manager - adds base business-unit code + interfaces. [x]
     - kafka (consumer/producer)kafka message broker - adds code for . Need to think more, mb some supestructure above kafka/rabbiMQ.
     - cron - adds base code for cron.
     - proto-service - adds proto service. [x]
@@ -51,3 +51,4 @@ Command scathces:
 - Support for windows & macOS
 - Client add is very dirty. Need to rethink approach. Need checks and clean code. 
 - Short flag for command architecture.
+- Add help for makefiles. [x]

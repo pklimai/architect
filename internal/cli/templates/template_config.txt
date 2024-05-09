@@ -11,7 +11,7 @@ import (
 
 // nolint: revive, gosec
 const (
-	Key_LogLevel = "LOG_LEVEL"
+	Key_LogLevel key = "LOG_LEVEL"
 
 	Key_Host        key = "HOST"
 	Key_PortHTTP    key = "PORT_HTTP"

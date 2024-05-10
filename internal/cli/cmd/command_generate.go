@@ -12,13 +12,13 @@ import (
 
 var generateCmd = &cobra.Command{
 	Use:   "generate",
-	Short: "Base for other generate sub commands.",
+	Short: "Base for other generate sub commands",
 	Long:  "Command is a root for various generate sub commands.",
 }
 
 var servicesCmd = &cobra.Command{
 	Use:   "services",
-	Short: "Generate servises bases on given names.",
+	Short: "Generate servises bases on given names",
 	Long: `Generate entitis for base application that responsible for connection between ptotoc generated code.
 It generates code only for name that satisfies snake_case_name_service with name SnakeCaseNameService.
 `,

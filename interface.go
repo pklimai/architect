@@ -9,6 +9,7 @@ import (
 
 type service interface {
 	RegisterGRPC(server *grpc.Server)
+
 	RegisterGatewayEndpoint(
 		ctx context.Context,
 		mux *gw_runtime.ServeMux,

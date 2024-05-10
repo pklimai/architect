@@ -9,38 +9,41 @@ import "validate/validate.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+    info: {
+        title: "{{ .ProjectName }}";
+    };
     host: "localhost:7000";
     external_docs: {
       url: "https://{{ .Module }}";
       description: "API for {{ .ProjectName }} application.";
-    }
+    };
     schemes: [HTTP, HTTPS];
     consumes: "application/json";
     produces: "application/json";
 };
 
 service {{ .ProjectNameCamelCaseWithFirstUpper }}Service {
-    // Get employee by id.
-    rpc GetEmployeeV1 (GetEmployeeV1Request) returns (GetEmployeeV1Response) {
+    // Get some data by id.
+    rpc GetSomeDataV1 (GetSomeDataV1Request) returns (GetSomeDataV1Response) {
         option (google.api.http) = {
-            get: "/{{ .ProjectName }}/v1/get-employee",
+            get: "/{{ .ProjectName }}/v1/get-some-data",
         };
     }
 }
 
 // --------------- GENERAL TYPES ---------------
 
-message Employee {
+message Data {
     int64 id = 1 [json_name = "id"];
     string name = 2 [json_name = "name"];
 }
 
 // --------------- HANLDER TYPES ---------------
 
-message GetEmployeeV1Request {
-    int64 employee_id = 1 [json_name = "employee_id", (validate.rules).int64.gt = 0];
+message GetSomeDataV1Request {
+    int64 data_id = 1 [json_name = "data_id", (validate.rules).int64.gt = 0];
 }
 
-message GetEmployeeV1Response {
-    Employee employee = 1 [json_name = "employee"];
+message GetSomeDataV1Response {
+    Data data = 1 [json_name = "data"];
 }

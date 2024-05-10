@@ -11,7 +11,7 @@ import (
 
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Initialize architect application.",
+	Short: "Initialize architect application",
 	Long: `Cteate new architect application with all necessary infrastructure and ready to start.
 Name of application (the last part of mudule) shuould be in kebab-case.
 `,

@@ -35,6 +35,17 @@ GOLANGCI_BIN := $(LOCAL_BIN)/golangci-lint
 ARCHITECT_BIN := $(LOCAL_BIN)/architect
 
 #======================================#
+# HELP
+#======================================#
+
+help: ## shows available targets with usage comment
+	@sed \
+		-e '/^[a-zA-Z0-9_\-]*:.*##/!d' \
+		-e 's/:.*##\s*/:/' \
+		-e 's/^\(.\+\):\(.*\)/$(shell tput setaf 4)\1$(shell tput sgr0):\2/' \
+		$(MAKEFILE_LIST) | sort | column -t -s :
+
+#======================================#
 # INSTALLATION
 #======================================#
 
@@ -191,8 +202,10 @@ pre-push: .pre-push # execute checks before push
 
 run: .run ## run service
 
-# Declare that the current commands are not files and
-# instruct Makefile not to look for changes to the filesystem.
+#======================================#
+# PHONY
+#======================================#
+
 .PHONY: \
 	.install-protoc \
     .bin-deps \

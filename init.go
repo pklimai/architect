@@ -7,10 +7,9 @@ import (
 	"mime"
 	"net/http"
 
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	gw_runtime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"gitlab.com/zigal0/architect/pkg/business_error"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
@@ -22,11 +21,7 @@ func (a *App) initGRPCServer(services ...service) {
 	}
 
 	a.grpcServer = grpc.NewServer(
-		grpc.ChainUnaryInterceptor(
-			grpc_validator.UnaryServerInterceptor(),
-			business_error.HandleErrorMiddleware(true),
-			grpc_recovery.UnaryServerInterceptor(),
-		),
+		grpc.ChainUnaryInterceptor(a.options.UnaryInterseptors...),
 	)
 
 	for _, s := range services {
@@ -37,10 +32,15 @@ func (a *App) initGRPCServer(services ...service) {
 }
 
 func (a *App) initHTTPServer(services ...service) error {
+	a.httpServer = chi.NewRouter()
+
+	a.httpServer.Use(cors.Handler(a.options.corsOptions))
+
 	gatewayMux := gw_runtime.NewServeMux()
 
 	for _, s := range services {
-		// Need to use RegisterGateway, but middlewares are problems.
+		// TODO: Need to use RegisterGateway, but middlewares are problems
+		// coz gateway use gRPC server directly without them.
 		if err := s.RegisterGatewayEndpoint(
 			context.Background(),
 			gatewayMux,
@@ -50,17 +50,11 @@ func (a *App) initHTTPServer(services ...service) error {
 				grpc.WithBlock(),
 			},
 		); err != nil {
-			return fmt.Errorf("RegisterGateway: %w", err)
+			return fmt.Errorf("RegisterGatewayEndpoint: %w", err)
 		}
 	}
 
-	a.httpServer = &http.Server{
-		ReadHeaderTimeout: a.options.readHeaderTimeout,
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Access-Control-Allow-Origin", "*")
-			gatewayMux.ServeHTTP(w, r)
-		}),
-	}
+	a.httpServer.Handle("/*", gatewayMux)
 
 	return nil
 }
@@ -78,12 +72,7 @@ func (a *App) initSwaggerServer() error {
 		panic("couldn't create sub filesystem: " + err.Error())
 	}
 
-	handler := http.FileServer(http.FS(subFS))
-
-	a.swaggerServer = &http.Server{
-		ReadHeaderTimeout: a.options.readHeaderTimeout,
-		Handler:           handler,
-	}
+	a.swaggerServer = http.FileServer(http.FS(subFS))
 
 	return nil
 }

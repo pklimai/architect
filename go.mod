@@ -6,13 +6,14 @@ toolchain go1.22.2
 
 require (
 	github.com/fatih/color v1.16.0
+	github.com/go-chi/chi/v5 v5.0.12
+	github.com/go-chi/cors v1.2.1
 	github.com/gojuno/minimock/v3 v3.3.7
-	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/zap v1.27.0
-	golang.org/x/mod v0.9.0
+	golang.org/x/mod v0.12.0
 	google.golang.org/grpc v1.63.2
 )
 

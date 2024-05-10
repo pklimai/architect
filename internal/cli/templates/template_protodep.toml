@@ -40,3 +40,4 @@ proto_outdir = "./vendor.protogen"
     "annotations.proto",
   ]
   protocol = "https"
+  

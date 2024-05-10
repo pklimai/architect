@@ -12,8 +12,9 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// HandleErrorMiddleware - middleware for logging errors and converting them to gRPC format.
-func HandleErrorMiddleware(enableLog bool) grpc.UnaryServerInterceptor {
+// UnaryServerInterceptor returns a new unary server interceptor
+// for handling business errors and logging errors.
+func UnaryServerInterceptor(enableLog bool) grpc.UnaryServerInterceptor {
 	return func(
 		ctx context.Context,
 		req interface{},

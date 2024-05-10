@@ -5,24 +5,25 @@ import (
 	"net/http"
 	"syscall"
 
+	"github.com/go-chi/chi/v5"
 	"gitlab.com/zigal0/architect/pkg/closer"
 	"gitlab.com/zigal0/architect/pkg/logger"
 	"google.golang.org/grpc"
 )
 
 type App struct {
-	options options
+	options *Options
 
 	closer *closer.Closer
 
 	listeners *listeners
 
+	httpServer    chi.Router
+	swaggerServer http.Handler
 	grpcServer    *grpc.Server
-	httpServer    *http.Server
-	swaggerServer *http.Server
 }
 
-func NewApp(appSettings AppSettings) (*App, error) {
+func NewApp(appSettings AppSettings, optionAppliers ...OptionApplier) (*App, error) {
 	logLevel, err := logger.ParseLevel(appSettings.LogLevel)
 	if err != nil {
 		return nil, err
@@ -30,7 +31,10 @@ func NewApp(appSettings AppSettings) (*App, error) {
 
 	logger.SetLevel(logLevel)
 
-	options := initOptions(appSettings)
+	options, err := initOptions(appSettings, optionAppliers...)
+	if err != nil {
+		return nil, fmt.Errorf("initOptions: %w", err)
+	}
 
 	listeners, err := newListeners(options)
 	if err != nil {

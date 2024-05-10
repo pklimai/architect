@@ -89,8 +89,13 @@ func (a *App) runHTTP() {
 		return
 	}
 
+	httpServer := &http.Server{
+		ReadHeaderTimeout: a.options.readHeaderTimeout,
+		Handler:           a.httpServer,
+	}
+
 	go func() {
-		if err := a.httpServer.Serve(a.listeners.http); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		if err := httpServer.Serve(a.listeners.http); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			logger.Errorf("httpServer.Serve: %v", err)
 
 			a.closer.CloseAll()
@@ -105,9 +110,9 @@ func (a *App) runHTTP() {
 		time.Sleep(a.options.gracefulDelay)
 		logger.Warn("http server is shutting down")
 
-		a.httpServer.SetKeepAlivesEnabled(false)
+		httpServer.SetKeepAlivesEnabled(false)
 
-		if err := a.httpServer.Shutdown(ctx); err != nil {
+		if err := httpServer.Shutdown(ctx); err != nil {
 			return fmt.Errorf("http server failed to shutdown: %w", err)
 		}
 
@@ -122,8 +127,13 @@ func (a *App) runSwagger() {
 		return
 	}
 
+	swaggerServer := &http.Server{
+		ReadHeaderTimeout: a.options.readHeaderTimeout,
+		Handler:           a.swaggerServer,
+	}
+
 	go func() {
-		if err := a.swaggerServer.Serve(a.listeners.swagger); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		if err := swaggerServer.Serve(a.listeners.swagger); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			logger.Errorf("swaggerServer.Serve: %v", err)
 
 			a.closer.CloseAll()
@@ -138,9 +148,9 @@ func (a *App) runSwagger() {
 		time.Sleep(a.options.gracefulDelay)
 		logger.Warn("swagger server is shutting down")
 
-		a.swaggerServer.SetKeepAlivesEnabled(false)
+		swaggerServer.SetKeepAlivesEnabled(false)
 
-		if err := a.swaggerServer.Shutdown(ctx); err != nil {
+		if err := swaggerServer.Shutdown(ctx); err != nil {
 			return fmt.Errorf("swagger server failed to shutdown: %w", err)
 		}
 

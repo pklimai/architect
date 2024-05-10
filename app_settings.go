@@ -2,6 +2,7 @@ package architect
 
 import "embed"
 
+// TODO: remove AppSettings and make all settings via Options or Flags.
 type AppSettings struct {
 	LogLevel    string
 	Host        string

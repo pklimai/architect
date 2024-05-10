@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func Test_HandleErrorMiddleware(t *testing.T) {
+func Test_UnaryServerInterceptor(t *testing.T) {
 	t.Parallel()
 
 	var (
@@ -38,10 +38,10 @@ func Test_HandleErrorMiddleware(t *testing.T) {
 			)
 		)
 
-		mw := business_error.HandleErrorMiddleware(true)
+		i := business_error.UnaryServerInterceptor(true)
 
 		// act
-		res, err := mw(f.ctx, nil, &grpc.UnaryServerInfo{}, handler)
+		res, err := i(f.ctx, nil, &grpc.UnaryServerInfo{}, handler)
 
 		// assert
 		f.Empty(res, "response")
@@ -64,10 +64,10 @@ func Test_HandleErrorMiddleware(t *testing.T) {
 			)
 		)
 
-		mw := business_error.HandleErrorMiddleware(true)
+		i := business_error.UnaryServerInterceptor(true)
 
 		// act
-		res, err := mw(f.ctx, nil, info, handler)
+		res, err := i(f.ctx, nil, info, handler)
 
 		// assert
 		f.Empty(res, "response")
@@ -90,10 +90,10 @@ func Test_HandleErrorMiddleware(t *testing.T) {
 			)
 		)
 
-		mw := business_error.HandleErrorMiddleware(true)
+		i := business_error.UnaryServerInterceptor(true)
 
 		// act
-		res, err := mw(f.ctx, nil, info, handler)
+		res, err := i(f.ctx, nil, info, handler)
 
 		// assert
 		f.Empty(res, "response")
@@ -119,10 +119,10 @@ func Test_HandleErrorMiddleware(t *testing.T) {
 			)
 		)
 
-		mw := business_error.HandleErrorMiddleware(true)
+		i := business_error.UnaryServerInterceptor(true)
 
 		// act
-		res, err := mw(f.ctx, nil, info, handler)
+		res, err := i(f.ctx, nil, info, handler)
 
 		// assert
 		f.Empty(res, "response")
@@ -143,10 +143,10 @@ func Test_HandleErrorMiddleware(t *testing.T) {
 			)
 		)
 
-		mw := business_error.HandleErrorMiddleware(true)
+		i := business_error.UnaryServerInterceptor(true)
 
 		// act
-		res, err := mw(f.ctx, nil, info, handler)
+		res, err := i(f.ctx, nil, info, handler)
 
 		// assert
 		f.Empty(res, "response")
@@ -167,10 +167,10 @@ func Test_HandleErrorMiddleware(t *testing.T) {
 			)
 		)
 
-		mw := business_error.HandleErrorMiddleware(true)
+		i := business_error.UnaryServerInterceptor(true)
 
 		// act
-		res, err := mw(f.ctx, nil, info, handler)
+		res, err := i(f.ctx, nil, info, handler)
 
 		// assert
 		f.Empty(res, "response")

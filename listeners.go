@@ -19,7 +19,7 @@ const (
 	formatErrFailedToListen = "failed to init %s listener for port %d: %w"
 )
 
-func newListeners(options options) (*listeners, error) {
+func newListeners(options *Options) (*listeners, error) {
 	httpListener, err := net.Listen("tcp", fmt.Sprintf(
 		formatAddress, options.host, options.portHTTP,
 	))

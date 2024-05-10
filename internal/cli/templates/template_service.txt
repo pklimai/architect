@@ -29,9 +29,3 @@ func (s *Service) RegisterGatewayEndpoint(
 	return pb.Register{{ .ServiceNameCamelCaseWithFirstUpper }}HandlerFromEndpoint(ctx, mux, endpoint, dialOptions)
 }
 
-func (s *Service) RegisterGateway(
-	ctx context.Context,
-	mux *gw_runtime.ServeMux,
-) error {
-	return pb.Register{{ .ServiceNameCamelCaseWithFirstUpper }}HandlerServer(ctx, mux, s)
-}

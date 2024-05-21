@@ -62,10 +62,12 @@ func projectPartInfosToInit(curProject *project.Project) []projectPartInfo {
 			needToOverride: false,
 		},
 		{
-			absPath:        curProject.AbsPath(),
-			pathParts:      []string{".gitlab-ci.yml"},
-			tmplt:          templates.TemplateGitlabCI,
-			tmpltData:      nil,
+			absPath:   curProject.AbsPath(),
+			pathParts: []string{".gitlab-ci.yml"},
+			tmplt:     templates.TemplateGitlabCI,
+			tmpltData: templates.CommonData{
+				ProjectName: curProject.Name(),
+			},
 			needToOverride: true,
 		},
 		{

@@ -57,3 +57,5 @@ Command scathces:
 - Add work with flags (ports & etc).
 - Add work with middleware. User can define middleware in architect.NewApp() func. Mb some default.
 - Fix work with CORS. Now it works only for GET methods.
+- Add Postgres connection (mb docker for postgres).
+- Add http client temaplte. 

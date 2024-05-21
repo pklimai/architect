@@ -1,31 +1,47 @@
+image: golang:1.22-alpine
+
+variables:
+  GOLANGCI_TAG: 1.57.1
+
 stages:
   - build
   - check
   - deploy
 
-go build:
+build:
   stage: build
   script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
+    - go mod tidy
+    - go build -o bin/{{ .ProjectName }} .
+  artifacts:
+    paths:
+      - bin/{{ .ProjectName }}
+    expire_in: 1 hour
 
 test:
   stage: check
   script:
-    - echo "Running unit tests... This will take about 5 seconds."
-    - sleep 5
-    - echo "Code coverage is 90%"
+    - go test ./... -coverprofile=coverage-report.out 
+    - go tool cover -html=coverage-report.out -o coverage-report.html
+    - go tool cover -func=coverage-report.out
+  artifacts:
+    paths:
+      - coverage-report.html
+    expire_in: 1 hour
+  coverage: "/\\(statements\\)\\s+\\d+.?\\d+%/"
 
 lint:
   stage: check
+  before_script:
+    - apk update && apk add git
   script:
-    - echo "Linting code... This will take about 5 seconds."
-    - sleep 5
-    - echo "No lint issues found."
+    - go install github.com/golangci/golangci-lint/cmd/golangci-lint@v${GOLANGCI_TAG}
+    - golangci-lint run --new-from-rev=origin/main --config=.golangci.yaml --timeout 5m ./...
 
-deploy-job:
+deploy:
   stage: deploy
   environment: production
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
+  

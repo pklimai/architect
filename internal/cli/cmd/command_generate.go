@@ -18,7 +18,7 @@ var generateCmd = &cobra.Command{
 
 var servicesCmd = &cobra.Command{
 	Use:   "services",
-	Short: "Generate servises bases on given names",
+	Short: "Generate services bases on given names",
 	Long: `Generate entitis for base application that responsible for connection between ptotoc generated code.
 It generates code only for name that satisfies snake_case_name_service with name SnakeCaseNameService.
 `,

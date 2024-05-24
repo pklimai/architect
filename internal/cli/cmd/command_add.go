@@ -138,7 +138,7 @@ Name should satisfy snake_case.
 }
 
 var protoServiceCmd = &cobra.Command{
-	Use:   "proto-service",
+	Use:   "proto_service",
 	Short: "Create proto contract for new service with given name",
 	Long: `Create proto contract for new service in the specified path api/some_name_service/service.proto.
 It contains example service that should be override. 

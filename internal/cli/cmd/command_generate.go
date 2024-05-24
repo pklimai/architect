@@ -28,6 +28,8 @@ It generates code only for name that satisfies snake_case_name_service with name
 
 		if len(args) == 0 {
 			logger.Info("No services names were provided.")
+
+			return
 		}
 
 		moduleName, err := moduleFromGoMod()

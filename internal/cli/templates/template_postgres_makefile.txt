@@ -1,0 +1,67 @@
+
+#======================================#
+# VARIABLES
+#======================================#
+
+## GENERAL
+SERVICE_NAME = "{{ .ProjectName }}"
+MIGRATION_DIR = $(CURDIR)/migration
+PG_DSN="host=localhost port=1331 user=$(SERVICE_NAME)-user password=1234 dbname=$(SERVICE_NAME) sslmode=disable"
+
+## BIN
+GOOSE_BIN = $(LOCAL_BIN)/goose
+
+#======================================#
+# INSTALLATION
+#======================================#
+
+.custom-bin-deps: export GOBIN := $(LOCAL_BIN)
+.custom-bin-deps:
+	$(info Installing custom bins for project...)    
+	tmp=$$(mktemp -d) && cd $$tmp && go mod init temp && \
+		go install github.com/pressly/goose/v3/cmd/goose@latest
+	rm -rf $$tmp
+
+custom-bin-deps: .custom-bin-deps ## install custom necessary bins
+
+#======================================#
+# DOCKER
+#======================================#
+
+.compose-up: 
+	docker compose -p $(SERVICE_NAME) -f ./local/docker/docker-compose.yaml up -d
+
+.compose-down: 
+	docker compose -p $(SERVICE_NAME) -f ./local/docker/docker-compose.yaml down
+
+.compose-rm:
+	docker compose -p $(SERVICE_NAME) -f ./local/docker/docker-compose.yaml rm -fvs  #f - force, v - any anonymous volumes, s - stop
+
+.compose-rs:
+	make compose-rm
+	make compose-up
+
+compose-up: .compose-up ## start docker containers
+
+compose-down: .compose-down ## stop docker containers
+
+compose-rm: .compose-rm ## stop and remove docker containers
+
+compose-rs: .compose-rs ## restart docker containers
+
+#======================================#
+# MIGRATIONS
+#======================================#
+
+.migration-up: 
+	$(GOOSE_BIN) -dir $(MIGRATION_DIR) postgres $(PG_DSN) up
+
+.migration-down:
+	$(GOOSE_BIN) -dir $(MIGRATION_DIR) postgres $(PG_DSN) down
+
+migration-up: .migration-up ## run up pg migratins
+
+migration-down: .migration-pg-down ## run down pg migratins
+
+migration-create: ## create migration file in pg migration folder
+	$(GOOSE_BIN) -dir $(MIGRATION_DIR) create $(name) sql

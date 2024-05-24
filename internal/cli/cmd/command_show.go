@@ -12,7 +12,7 @@ var showCmd = &cobra.Command{
 	Long:  "Command is a root for various show sub commands.",
 }
 
-var architectureCmd = &cobra.Command{
+var showArchitectureCmd = &cobra.Command{
 	Use:   "architecture",
 	Short: "Show architecture of the architect based application",
 	Long:  "Show components of architect based application with short info.",

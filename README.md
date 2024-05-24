@@ -4,6 +4,8 @@ Architect is a tool for creating web applications on Golang on the fly. It consi
 1. The CLI part generates sceleton of future microservice, helps with its architecture and simplifies work with infra parts. 
 2. The framework part runs microservices based on the architect and provides some connection with infra.
 
+Now it is in active development stage, so please feel free to suggest all your ideas. 
+
 Many things in development bond with your team or organizations, e.g. using gitlab, linters, internal architecture and other stuff. You can suggest some changes or feel free to fork this tool and change templates in internal/cli/templates folder for your goals. 
 
 ## Goals 
@@ -39,6 +41,7 @@ add         Base for other add sub commands
     proto-service   Add proto contract for new service with given name
     repository      Add new repository with given name
     sub-manager     Add new sub manager, lower logic entity, with given name
+    postgres        Add code to connect to postgres and stuff for local work by flag
 
 completion  Generate the autocompletion script for the specified 
     bash            Generate the autocompletion script for bash
@@ -170,7 +173,7 @@ Schema of gRPC + REST + Swagger:
 ### Command scratches
 * ```add grpc-client``` - need to be improved. Generate pb code, close with local interface for test. 
 * ```add http-client``` - need to add. Many other services communicate only via http.
-* ```add postgres``` - adds code for connection to postgres, and part in docker-compose for local development (commands in Makefile).
+* ```add postgres``` - fix to add to the docker-compose.yaml, not create + flag for postgres verison (docker) + where to add code (Makefile).
 * ```add 'other dbs'``` - add commands for other dbs for require.
 * ```add repository``` - many cases of errors with work in this layer. Need to add code for testing.
 * ```add logic-component 'name'``` - consider adding other logic components.
@@ -205,3 +208,5 @@ Schema of gRPC + REST + Swagger:
 - Add work with flags (ports & etc).
 - Add work with http middlewares. Now it is only for gRPC.
 - Speed up the generating process and reduce logs.  
+- Connsider work without API (e.g. can be separate consumer service).
+- Consider structure of commands. 

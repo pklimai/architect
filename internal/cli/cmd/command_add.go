@@ -18,13 +18,21 @@ const (
 	logNoEntityNameProvided = "No entity name was provided."
 )
 
+var (
+	localPostgresFlag bool
+)
+
+func init() {
+	addPotgresCmd.Flags().BoolVar(&localPostgresFlag, "local", false, "add postgres to docker-compose & make targets for local work") // nolint: lll
+}
+
 var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Base for other add sub commands",
 	Long:  "Command is a root for various add sub commands.",
 }
 
-var managerCmd = &cobra.Command{
+var addManagerCmd = &cobra.Command{
 	Use:   "manager",
 	Short: "Add new manager, top logic entity, with given name",
 	// nolint: lll
@@ -59,7 +67,7 @@ Name should satisfy snake_case.
 	},
 }
 
-var subManagerCmd = &cobra.Command{
+var addSubManagerCmd = &cobra.Command{
 	Use:   "sub-manager",
 	Short: "Add new sub manager, lower logic entity, with given name",
 	// nolint: lll
@@ -94,7 +102,7 @@ Name should satisfy snake_case.
 	},
 }
 
-var repositoryCmd = &cobra.Command{
+var addRepositoryCmd = &cobra.Command{
 	Use:   "repository",
 	Short: "Add new repository with given name",
 	// nolint: lll
@@ -118,8 +126,8 @@ Name should satisfy snake_case.
 		createProjectPart(projectPartInfo{
 			absPath: curProject.AbsPath(),
 			pathParts: []string{
-				layerNameInternal,
-				layerNameAdapter,
+				dirNameInternal,
+				dirNameAdapter,
 				entityTypeNameRepository,
 				args[0],
 				entityTypeNameRepository + extensionGo,
@@ -137,7 +145,7 @@ Name should satisfy snake_case.
 	},
 }
 
-var protoServiceCmd = &cobra.Command{
+var addProtoServiceCmd = &cobra.Command{
 	Use:   "proto-service",
 	Short: "Add proto contract for new service with given name",
 	Long: `Create proto contract for new service in the specified path api/some_name_service/service.proto.
@@ -163,7 +171,7 @@ After changes you need to execute make target 'generate'.
 		createProjectPart(projectPartInfo{
 			absPath: curProject.AbsPath(),
 			pathParts: []string{
-				layerNameAPI,
+				dirNameAPI,
 				serviceName,
 				entityTypeNameService + extensionProto,
 			},
@@ -181,9 +189,9 @@ After changes you need to execute make target 'generate'.
 	},
 }
 
-var clientCmd = &cobra.Command{
+var addClientCmd = &cobra.Command{
 	Use:   "grpc-client",
-	Short: "Add code for connect and interact with given client via gRPC",
+	Short: "Add code to connect and interact with given client via gRPC",
 	// nolint: lll
 	Long: `Generate code for connect with given client via gRPC in the specified path internal/adapter/client/client_name/client.proto.
 It adds contracnts to protodep.toml. Also it generates connection provider if it's not exist.
@@ -213,8 +221,8 @@ After changes you need to execute make target 'generate' and add code for gRPC c
 		createProjectPart(projectPartInfo{
 			absPath: curProject.AbsPath(),
 			pathParts: []string{
-				layerNameInternal,
-				layerNameAdapter,
+				dirNameInternal,
+				dirNameAdapter,
 				entityTypeNameClient,
 				fileNameProvider,
 			},
@@ -226,8 +234,8 @@ After changes you need to execute make target 'generate' and add code for gRPC c
 		createProjectPart(projectPartInfo{
 			absPath: curProject.AbsPath(),
 			pathParts: []string{
-				layerNameInternal,
-				layerNameAdapter,
+				dirNameInternal,
+				dirNameAdapter,
 				entityTypeNameClient,
 				clientName,
 				entityTypeNameClient + extensionGo,
@@ -250,6 +258,75 @@ After changes you need to execute make target 'generate' and add code for gRPC c
 	},
 }
 
+var addPotgresCmd = &cobra.Command{
+	Use:   "postgres",
+	Short: "Add code to connect to postgres and stuff for local work by flag",
+	// nolint: lll
+	Long: "Add code to connect to postgres. With local flag add tools for local work (docker, env, make-targets, migration mechanism)",
+	Run: func(_ *cobra.Command, _ []string) {
+		logger.Infof(formatLogStartCreation, "postgres")
+
+		moduleName, err := moduleFromGoMod()
+		logger.FatalIfErr(err)
+
+		curProject := project.New(moduleName)
+
+		createProjectPart(projectPartInfo{
+			absPath: curProject.AbsPath(),
+			pathParts: []string{
+				"database",
+				"postgres.go",
+			},
+			tmplt: templates.TemplatePostgresConnect,
+			tmpltData: templates.CommonData{
+				Module: curProject.Module(),
+			},
+		})
+
+		if localPostgresFlag {
+			// TODO: need to append, not create.
+			createProjectPart(projectPartInfo{
+				absPath: curProject.AbsPath(),
+				pathParts: []string{
+					"local",
+					"docker",
+					"docker-compose.yaml",
+				},
+				tmplt: templates.TemplatePostgresDocker,
+				tmpltData: templates.CommonData{
+					ProjectName: curProject.Name(),
+				},
+			})
+
+			appendToProjectPart(projectPartInfo{
+				absPath: curProject.AbsPath(),
+				pathParts: []string{
+					dirNameConfig,
+					"env_local_example.env",
+				},
+				tmplt: templates.TemplatePostgresEnv,
+				tmpltData: templates.CommonData{
+					ProjectName: curProject.Name(),
+				},
+			})
+
+			// TODO: Need to change place for append.
+			appendToProjectPart(projectPartInfo{
+				absPath: curProject.AbsPath(),
+				pathParts: []string{
+					"Makefile",
+				},
+				tmplt: templates.TemplatePostgresMakefile,
+				tmpltData: templates.CommonData{
+					ProjectName: curProject.Name(),
+				},
+			})
+		}
+
+		logger.Infof(formatLogFinishCreation, "postgres")
+	},
+}
+
 // --------------------//
 // Creation
 // --------------------//
@@ -259,7 +336,7 @@ func projectPartInfosToAddLogicEntity(
 	entityTypeName string,
 	entityName string,
 ) []projectPartInfo {
-	baseParths := []string{layerNameInternal, layerNameBusiness, entityTypeName, entityName}
+	baseParths := []string{dirNameInternal, dirNameBusiness, entityTypeName, entityName}
 
 	pkgName := strings.Join([]string{entityName, entityTypeName}, "_")
 

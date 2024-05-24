@@ -16,7 +16,7 @@ var generateCmd = &cobra.Command{
 	Long:  "Command is a root for various generate sub commands.",
 }
 
-var servicesCmd = &cobra.Command{
+var generateServicesCmd = &cobra.Command{
 	Use:   "services",
 	Short: "Generate services bases on given names",
 	Long: `Generate entitis for base application that responsible for connection between ptotoc generated code.
@@ -28,8 +28,6 @@ It generates code only for name that satisfies snake_case_name_service with name
 
 		if len(args) == 0 {
 			logger.Info("No services names were provided.")
-
-			return
 		}
 
 		moduleName, err := moduleFromGoMod()
@@ -47,8 +45,8 @@ It generates code only for name that satisfies snake_case_name_service with name
 			createProjectPart(projectPartInfo{
 				absPath: curProject.AbsPath(),
 				pathParts: []string{
-					layerNameInternal,
-					layerNameAPI,
+					dirNameInternal,
+					dirNameAPI,
 					serviceName + "_impl",
 					"service.go",
 				},

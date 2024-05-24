@@ -23,15 +23,15 @@ var architectureCmd = &cobra.Command{
 }
 
 const architectureCmdOutput = `Scheme of architect-application:
-├── api	# proto contracts
+├── api # proto contracts
 │   ├── some_name_service # for one gRPC service
 │   │   └── service.proto
-│   └── types # tpyes that used in some gRPC services
+│   └── types # entities that used in some proto files services
 │       └── types.proto
-├── bin # for binaries (in .gitignore)
+├── bin # for local binaries (in .gitignore)
 │   └── ...
 ├── cmd # run entry points
-│   ├── helper  # entry for developer needs
+│   ├── helper # entry for developer needs
 │   │   └── ...
 │   └── project # entry for app
 │       └── main.go
@@ -41,7 +41,7 @@ const architectureCmdOutput = `Scheme of architect-application:
 │   ├── prod.env
 │   └── stg.env
 ├── internal # internal code of app
-│   ├── adapter # data sources
+│   ├── adapter # external entities to work with data 
 │   │   ├── client # other microservices
 │   │   │   ├──some_app_name
 │   │   │   │   ├── client.go
@@ -76,9 +76,9 @@ const architectureCmdOutput = `Scheme of architect-application:
 │   ├── domain # entities in app 
 │   │   └── ...
 │   ├── generated # auto generated code (DO NOT EDIT)
-│   │   ├── api # api of app
+│   │   ├── api # code for api of app
 │   │   │   └── ...
-│   │   ├── client # api of other apps
+│   │   ├── client # code for api of other apps
 │   │   │   └── ...
 │   │   └── swagger # dirty hack (will removed)
 │   │       └── ...
@@ -97,7 +97,7 @@ const architectureCmdOutput = `Scheme of architect-application:
 │   └── ...
 ├── vendor.protogen # vendor for proto (in .gitignore)
 │   └── ...
-├── .gitattributes # customize action with git (e.g. diff)
+├── .gitattributes # customization of action with git (e.g. diff)
 ├── .gitignore # list of ignore dirs & files
 ├── .gitlab-ci.yml # pipeline for gitlab
 ├── .golangci.yaml # linter configuration

@@ -6,13 +6,12 @@ variables:
 stages:
   - build
   - check
-  - deploy
 
 build:
   stage: build
   script:
     - go mod tidy
-    - go build -o bin/architect .
+    - go build -o bin/architect cmd/architect/main.go
   artifacts:
     paths:
       - bin/architect
@@ -37,10 +36,3 @@ lint:
   script:
     - go install github.com/golangci/golangci-lint/cmd/golangci-lint@v${GOLANGCI_TAG}
     - golangci-lint run --new-from-rev=origin/main --config=.golangci.yaml --timeout 5m ./...
-
-deploy:
-  stage: deploy
-  environment: production
-  script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."

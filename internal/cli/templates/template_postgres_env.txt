@@ -1,0 +1,2 @@
+
+PG_DSN = "host=localhost port=1337 dbname={{ .ProjectName }} user={{ .ProjectName }}-user password=1234 sslmode=disable"

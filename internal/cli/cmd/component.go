@@ -8,12 +8,12 @@ const (
 	entityTypeNameService    = "service"
 	entityTypeNameClient     = "client"
 
-	// layer
-	layerNameInternal = "internal"
-	layerNameBusiness = "business"
-	layerNameAPI      = "api"
-	layerNameConfig   = "config"
-	layerNameAdapter  = "adapter"
+	// dir
+	dirNameInternal = "internal"
+	dirNameBusiness = "business"
+	dirNameAPI      = "api"
+	dirNameConfig   = "config"
+	dirNameAdapter  = "adapter"
 
 	// extension
 	extensionGo    = ".go"

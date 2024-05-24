@@ -193,7 +193,7 @@ var addClientCmd = &cobra.Command{
 	Use:   "grpc-client",
 	Short: "Add code to connect and interact with given client via gRPC",
 	// nolint: lll
-	Long: `Generate code for connect with given client via gRPC in the specified path internal/adapter/client/client_name/client.proto.
+	Long: `Generate code to connect with given client via gRPC in the specified path internal/adapter/client/client_name/client.proto.
 It adds contracnts to protodep.toml. Also it generates connection provider if it's not exist.
 For execution requires 2 arguments: 
 * client name in snake_case;
@@ -274,6 +274,7 @@ var addPotgresCmd = &cobra.Command{
 		createProjectPart(projectPartInfo{
 			absPath: curProject.AbsPath(),
 			pathParts: []string{
+				dirNameInternal,
 				"database",
 				"postgres.go",
 			},
@@ -284,15 +285,27 @@ var addPotgresCmd = &cobra.Command{
 		})
 
 		if localPostgresFlag {
-			// TODO: need to append, not create.
-			createProjectPart(projectPartInfo{
-				absPath: curProject.AbsPath(),
-				pathParts: []string{
-					"local",
-					"docker",
-					"docker-compose.yaml",
-				},
-				tmplt: templates.TemplatePostgresDocker,
+			pathParts := []string{
+				dirNameLocal,
+				dirNameDocker,
+				fileNameDockerCompose,
+			}
+
+			if !checkFileExist(filepath.Join(pathParts...)) {
+				createProjectPart(projectPartInfo{
+					absPath:   curProject.AbsPath(),
+					pathParts: pathParts,
+					tmplt:     templates.TemplateDockerComposeBase,
+					tmpltData: templates.CommonData{
+						ProjectName: curProject.Name(),
+					},
+				})
+			}
+
+			appendToProjectPart(projectPartInfo{
+				absPath:   curProject.AbsPath(),
+				pathParts: pathParts,
+				tmplt:     templates.TemplatePostgresDocker,
 				tmpltData: templates.CommonData{
 					ProjectName: curProject.Name(),
 				},

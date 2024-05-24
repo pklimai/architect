@@ -36,7 +36,7 @@ The main goal of the CLI part of the architect is design and build your microser
 Architect as a CLI has next commands:
 ```
 add         Base for other add sub commands
-    grpc-client     Add code for connect and interact with given client via gRPC
+    grpc-client     Add code to connect and interact with given client via gRPC
     manager         Add new manager, top logic entity, with given name
     proto-service   Add proto contract for new service with given name
     repository      Add new repository with given name
@@ -114,6 +114,8 @@ Final architecture of microservice based on architect:
 │   │       └── ...
 │   ├── domain # entities in app 
 │   │   └── ...
+│   ├── database # code for db connections 
+│   │   └── ...
 │   ├── generated # auto generated code (DO NOT EDIT)
 │   │   ├── api # code for api of app
 │   │   │   └── ...
@@ -157,7 +159,7 @@ The main goal of the framework part is to run microservices based on the archite
 The most valuable piece is that the architect takes the responsibility for work with the API layer. All that developers need is to define contracts on Protocol Buffer and write some code for mapping domain structures to API (pb). Architect builds all code to work with the next bunch: gRPC, REST & Swagger. 
 
 Schema of gRPC + REST + Swagger:
-![alt text](image/gRPC_REST_Swagger.png)
+![alt text](image/grpc_rest_swagger.png)
 
 ### Components of framework: 
 - Closer - inteface for correct closes all connections that were open during app run. 
@@ -210,3 +212,7 @@ Schema of gRPC + REST + Swagger:
 - Speed up the generating process and reduce logs.  
 - Connsider work without API (e.g. can be separate consumer service).
 - Consider structure of commands. 
+- Consider rollback if commands failed.
+- Consider text of errors for http. 
+- Add instruction for correct fork. 
+- Refactor templates & cmd dirs. Need to split into different packages. 

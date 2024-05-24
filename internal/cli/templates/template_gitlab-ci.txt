@@ -6,13 +6,12 @@ variables:
 stages:
   - build
   - check
-  - deploy
 
 build:
   stage: build
   script:
     - go mod tidy
-    - go build -o bin/{{ .ProjectName }} .
+    - go build -o bin/{{ .ProjectName }} cmd/{{ .ProjectName }}/main.go
   artifacts:
     paths:
       - bin/{{ .ProjectName }}
@@ -37,11 +36,4 @@ lint:
   script:
     - go install github.com/golangci/golangci-lint/cmd/golangci-lint@v${GOLANGCI_TAG}
     - golangci-lint run --new-from-rev=origin/main --config=.golangci.yaml --timeout 5m ./...
-
-deploy:
-  stage: deploy
-  environment: production
-  script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
   

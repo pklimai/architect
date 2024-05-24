@@ -2,6 +2,7 @@ package templates
 
 type CommonData struct {
 	ProjectName string
+	Module      string
 }
 
 type ProtoAppServiceData struct {

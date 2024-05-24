@@ -91,7 +91,7 @@ issues:
     - should have comment
     - should have a package comment
     - don't use an underscore in package name
-    - comment on exported var
+    - comment on exported
     - package comment should be of the form
   exclude-dirs: 
     - bin

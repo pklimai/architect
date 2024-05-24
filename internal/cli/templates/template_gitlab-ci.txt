@@ -12,10 +12,10 @@ build:
   stage: build
   script:
     - go mod tidy
-    - go build -o bin/architect .
+    - go build -o bin/{{ .ProjectName }} .
   artifacts:
     paths:
-      - bin/architect
+      - bin/{{ .ProjectName }}
     expire_in: 1 hour
 
 test:
@@ -44,3 +44,4 @@ deploy:
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
+  

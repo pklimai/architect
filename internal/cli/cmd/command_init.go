@@ -62,10 +62,12 @@ func projectPartInfosToInit(curProject *project.Project) []projectPartInfo {
 			needToOverride: false,
 		},
 		{
-			absPath:        curProject.AbsPath(),
-			pathParts:      []string{".gitlab-ci.yml"},
-			tmplt:          templates.TemplateGitlabCI,
-			tmpltData:      nil,
+			absPath:   curProject.AbsPath(),
+			pathParts: []string{".gitlab-ci.yml"},
+			tmplt:     templates.TemplateGitlabCI,
+			tmpltData: templates.CommonData{
+				ProjectName: curProject.Name(),
+			},
 			needToOverride: true,
 		},
 		{
@@ -103,14 +105,14 @@ func projectPartInfosToInit(curProject *project.Project) []projectPartInfo {
 		},
 		{
 			absPath:        curProject.AbsPath(),
-			pathParts:      []string{layerNameConfig, "config.go"},
+			pathParts:      []string{dirNameConfig, "config.go"},
 			tmplt:          templates.TemplateConfig,
 			tmpltData:      nil,
 			needToOverride: false,
 		},
 		{
 			absPath:        curProject.AbsPath(),
-			pathParts:      []string{layerNameConfig, "env_local_example.env"},
+			pathParts:      []string{dirNameConfig, "env_local_example.env"},
 			tmplt:          templates.TemplateEnvLocalExample,
 			tmpltData:      nil,
 			needToOverride: false,
@@ -124,7 +126,7 @@ func projectPartInfosToInit(curProject *project.Project) []projectPartInfo {
 		},
 		{
 			absPath:   curProject.AbsPath(),
-			pathParts: []string{layerNameAPI, curProject.NameSnakeCase() + "_service", "service.proto"},
+			pathParts: []string{dirNameAPI, curProject.NameSnakeCase() + "_service", "service.proto"},
 			tmplt:     templates.TemplateProtoAppService,
 			tmpltData: templates.ProtoAppServiceData{
 				Module:                             curProject.Module(),
@@ -149,7 +151,7 @@ func projectPartInfosToInit(curProject *project.Project) []projectPartInfo {
 		// TODO: dirty hack for swagger, need to fix
 		{
 			absPath:        curProject.AbsPath(),
-			pathParts:      []string{layerNameInternal, "generated", "swagger", "embed.go"},
+			pathParts:      []string{dirNameInternal, "generated", "swagger", "embed.go"},
 			tmplt:          templates.TemplateSwaggerHack,
 			tmpltData:      nil,
 			needToOverride: false,

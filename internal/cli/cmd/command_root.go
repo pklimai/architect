@@ -8,8 +8,8 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "architect",
-	Short: "A genearator for architect applications.",
-	Long:  "Aarchitect is a CLI tool for fast generating uniform GO microservices, based on gitlab.com/zigal0/architect",
+	Short: "A genearator for architect applications",
+	Long:  "Aarchitect is a CLI tool for fast generating uniform GO microservices, based on gitlab.com/zigal0/architect.",
 }
 
 func Execute() {
@@ -28,15 +28,16 @@ func init() {
 	rootCmd.AddCommand(showCmd)
 
 	// generate sub commands
-	generateCmd.AddCommand(servicesCmd)
+	generateCmd.AddCommand(generateServicesCmd)
 
 	// add sub commands
-	addCmd.AddCommand(managerCmd)
-	addCmd.AddCommand(subManagerCmd)
-	addCmd.AddCommand(repositoryCmd)
-	addCmd.AddCommand(protoServiceCmd)
-	addCmd.AddCommand(clientCmd)
+	addCmd.AddCommand(addManagerCmd)
+	addCmd.AddCommand(addSubManagerCmd)
+	addCmd.AddCommand(addRepositoryCmd)
+	addCmd.AddCommand(addProtoServiceCmd)
+	addCmd.AddCommand(addClientCmd)
+	addCmd.AddCommand(addPotgresCmd)
 
 	// show
-	showCmd.AddCommand(architectureCmd)
+	showCmd.AddCommand(showArchitectureCmd)
 }

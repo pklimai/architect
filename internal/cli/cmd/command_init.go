@@ -112,7 +112,14 @@ func projectPartInfosToInit(curProject *project.Project) []projectPartInfo {
 		},
 		{
 			absPath:        curProject.AbsPath(),
-			pathParts:      []string{dirNameConfig, "env_local_example.env"},
+			pathParts:      []string{dirNameConfig, "local_example.env"},
+			tmplt:          templates.TemplateEnvLocalExample,
+			tmpltData:      nil,
+			needToOverride: false,
+		},
+		{
+			absPath:        curProject.AbsPath(),
+			pathParts:      []string{dirNameConfig, ".env"},
 			tmplt:          templates.TemplateEnvLocalExample,
 			tmpltData:      nil,
 			needToOverride: false,

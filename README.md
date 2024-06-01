@@ -1,6 +1,6 @@
 # architect
 
-Architect is a tool for creating web applications on Golang on the fly. It consists of two parts: 
+Architect is a tool for building web applications on Golang on the fly. It consists of two parts: 
 1. The CLI part generates sceleton of future microservice, helps with its architecture and simplifies work with infra parts. 
 2. The framework part runs microservices based on the architect and provides some connection with infra.
 
@@ -14,6 +14,7 @@ Many things in development bond with your team or organizations, e.g. using gitl
 - Unify internal architecture of all Golang applications.
 - Move all infra from app so that developers can focus only on logic.
 - Automate routine product developer work. 
+- ABA-oriented architecture (API - Business - Adapter).
 
 ## Requirements
 
@@ -112,9 +113,9 @@ Final architecture of microservice based on architect:
 │   │   │       └── ...
 │   │   └── tool # different tools used in many places (future libs)
 │   │       └── ...
-│   ├── domain # entities in app 
-│   │   └── ...
 │   ├── database # code for db connections 
+│   │   └── ...
+│   ├── domain # entities in app 
 │   │   └── ...
 │   ├── generated # auto generated code (DO NOT EDIT)
 │   │   ├── api # code for api of app
@@ -216,3 +217,10 @@ Schema of gRPC + REST + Swagger:
 - Consider text of errors for http. 
 - Add instruction for correct fork. 
 - Refactor templates & cmd dirs. Need to split into different packages. 
+- Work Swagger in different environments (e.g. disable in PROD).
+- Deploy stage with push container to docker hub.
+- Problem during generation with google.golang.org/genproto. 
+- Problem with docker. Some thoughts on [stackoverflow](https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach).
+- Real time config.
+- Generate some stuff (ci file) depend on code host system. Now only Gitlab. 
+- Migrate to Github with issues. 

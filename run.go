@@ -29,7 +29,7 @@ func (a *App) Run(services ...service) error {
 	a.runSwagger()
 
 	logger.Errorf(
-		"App started on host = %s, ports: HTTP = %d, Swagger = %d, GRPC = %d",
+		"App started on host = %s, ports: HTTP = %d, Swagger = %d, gRPC = %d",
 		a.options.host,
 		a.options.portHTTP,
 		a.options.portSwagger,

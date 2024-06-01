@@ -1,6 +1,6 @@
 # architect
 
-Architect is a tool for creating web applications on Golang on the fly. It consists of two parts: 
+Architect is a tool for building web applications on Golang on the fly. It consists of two parts: 
 1. The CLI part generates sceleton of future microservice, helps with its architecture and simplifies work with infra parts. 
 2. The framework part runs microservices based on the architect and provides some connection with infra.
 
@@ -14,6 +14,7 @@ Many things in development bond with your team or organizations, e.g. using gitl
 - Unify internal architecture of all Golang applications.
 - Move all infra from app so that developers can focus only on logic.
 - Automate routine product developer work. 
+- ABA-oriented architecture (API - Business - Adapter).
 
 ## Requirements
 
@@ -36,7 +37,7 @@ The main goal of the CLI part of the architect is design and build your microser
 Architect as a CLI has next commands:
 ```
 add         Base for other add sub commands
-    grpc-client     Add code for connect and interact with given client via gRPC
+    grpc-client     Add code to connect and interact with given client via gRPC
     manager         Add new manager, top logic entity, with given name
     proto-service   Add proto contract for new service with given name
     repository      Add new repository with given name
@@ -112,6 +113,8 @@ Final architecture of microservice based on architect:
 │   │   │       └── ...
 │   │   └── tool # different tools used in many places (future libs)
 │   │       └── ...
+│   ├── database # code for db connections 
+│   │   └── ...
 │   ├── domain # entities in app 
 │   │   └── ...
 │   ├── generated # auto generated code (DO NOT EDIT)
@@ -157,7 +160,7 @@ The main goal of the framework part is to run microservices based on the archite
 The most valuable piece is that the architect takes the responsibility for work with the API layer. All that developers need is to define contracts on Protocol Buffer and write some code for mapping domain structures to API (pb). Architect builds all code to work with the next bunch: gRPC, REST & Swagger. 
 
 Schema of gRPC + REST + Swagger:
-![alt text](image/gRPC_REST_Swagger.png)
+![alt text](image/grpc_rest_swagger.png)
 
 ### Components of framework: 
 - Closer - inteface for correct closes all connections that were open during app run. 
@@ -210,3 +213,14 @@ Schema of gRPC + REST + Swagger:
 - Speed up the generating process and reduce logs.  
 - Connsider work without API (e.g. can be separate consumer service).
 - Consider structure of commands. 
+- Consider rollback if commands failed.
+- Consider text of errors for http. 
+- Add instruction for correct fork. 
+- Refactor templates & cmd dirs. Need to split into different packages. 
+- Work Swagger in different environments (e.g. disable in PROD).
+- Deploy stage with push container to docker hub.
+- Problem during generation with google.golang.org/genproto. 
+- Problem with docker. Some thoughts on [stackoverflow](https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach).
+- Real time config.
+- Generate some stuff (ci file) depend on code host system. Now only Gitlab. 
+- Migrate to Github with issues. 

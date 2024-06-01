@@ -1,0 +1,7 @@
+version: '3.5'
+
+networks:
+  {{ .ProjectName }}-net:
+
+services:
+

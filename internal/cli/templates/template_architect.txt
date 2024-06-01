@@ -136,7 +136,7 @@ endif
 		--openapiv2_opt logtostderr=true \
 		--openapiv2_opt allow_merge=true \
 		--openapiv2_opt generate_unbound_methods=true \
-		--openapiv2_opt merge_file_name=go_reference_project \
+		--openapiv2_opt merge_file_name=services \
 		$(shell ls ./api/*/*.proto)
 
 	$(info Generating services files...)

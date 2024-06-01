@@ -1,5 +1,36 @@
-FROM ubuntu:bionic
+# Golang image on apline linux with Golang version corresponding your go.mod
+FROM golang:1.22 AS build
 
-COPY bin/{{ .ProjectName }} .
+# Env variables
+ENV GOOS linux
+ENV CGO_ENABLED 0
 
-CMD ["/{{ .ProjectName }}"]
+# Work directory
+WORKDIR /app
+
+# Installing dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copying all the files
+COPY . .
+
+# Building the application
+RUN go build -o bin/{{ .ProjectName }} cmd/{{ .ProjectName }}/main.go
+
+# Base for prod image
+FROM alpine:3.20 AS prod
+
+# Work directory
+WORKDIR /app
+
+# Copying built assets from build
+COPY --from=build app/bin/{{ .ProjectName }} .
+COPY --from=build app/config/.env config/
+
+# Starting our application
+CMD ./{{ .ProjectName }}i
+
+# Exposing server port
+# HTTP, Swagger, gRPC
+EXPOSE 7000 7001 7002

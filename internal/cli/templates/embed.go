@@ -82,3 +82,6 @@ var TemplatePostgresEnv string
 
 //go:embed template_postgres_makefile.txt
 var TemplatePostgresMakefile string
+
+//go:embed template_docker-compose_base.txt
+var TemplateDockerComposeBase string
